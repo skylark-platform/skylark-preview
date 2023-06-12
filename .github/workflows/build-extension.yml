@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: echo "::set-env name=NOW::$(date +'%Y-%m-%dT%H%M')"
       - run: yarn
       - run: yarn build
       - uses: vimtor/action-zip@v1.1
@@ -16,5 +17,5 @@ jobs:
           dest: foresight-extension.zip
       - uses: actions/upload-artifact@v3
         with:
-          name: foresight-extension-$(date +'%Y-%m-%dT%H:%M:%S')
+          name: foresight-extension-${ env.NOW }
           path: foresight-extension.zip
