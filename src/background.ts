@@ -26,11 +26,13 @@ const convertModifiersToRules = ({
   );
 
   const requestHeaders: chrome.declarativeNetRequest.ModifyHeaderInfo[] =
-    Object.entries(dimensions).map(([dimension, value]) => ({
-      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-      header: `x-sl-dimension-${dimension}`,
-      value,
-    }));
+    Object.entries(dimensions)
+      .filter(([_, value]) => value)
+      .map(([dimension, value]) => ({
+        operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+        header: `x-sl-dimension-${dimension}`,
+        value,
+      }));
 
   if (timeTravel) {
     const timeTravelRule: chrome.declarativeNetRequest.ModifyHeaderInfo = {
