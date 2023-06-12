@@ -5,7 +5,6 @@ import {
 } from "./interfaces";
 import {
   getCredentialsFromStorage,
-  getExtensionEnabledFromStorage,
   getModifiersFromStorage,
   setExtensionEnabledToStorage,
 } from "./lib/storage";
@@ -107,12 +106,11 @@ const reloadCurrentTab = async () => {
   }
 };
 
-const toggleExtensionPaused = async () => {
-  const extensionEnabled = await getExtensionEnabledFromStorage();
-
-  console.log("toggleExtensionPaused", extensionEnabled);
-
-  if (extensionEnabled) {
+const toggleExtensionPaused = async (shouldEnable: boolean) => {
+  if (shouldEnable) {
+    const modifiers = await getModifiersFromStorage();
+    await updateRules(modifiers);
+  } else {
     const activeRules = await getActiveRules();
 
     const updateRuleOptions: chrome.declarativeNetRequest.UpdateRuleOptions = {
@@ -121,16 +119,13 @@ const toggleExtensionPaused = async () => {
     };
 
     await chrome.declarativeNetRequest.updateDynamicRules(updateRuleOptions);
-  } else {
-    const modifiers = await getModifiersFromStorage();
-    await updateRules(modifiers);
   }
 
-  await setExtensionEnabledToStorage(!extensionEnabled);
+  await setExtensionEnabledToStorage(shouldEnable);
   await chrome.action.setIcon({
-    path: extensionEnabled
-      ? "icons/logo-grayscale-32x32.png"
-      : "icons/logo-32x32.png",
+    path: shouldEnable
+      ? "icons/logo-32x32.png"
+      : "icons/logo-grayscale-32x32.png",
   });
 };
 
@@ -141,8 +136,11 @@ const handleMessage = async (
   switch (message.type) {
     case ExtensionMessageType.UpdateHeaders:
       return sendResponse(await updateRules(message.value));
-    case ExtensionMessageType.TogglePaused:
-      await toggleExtensionPaused();
+    case ExtensionMessageType.EnableExtension:
+    case ExtensionMessageType.DisableExtension:
+      await toggleExtensionPaused(
+        message.type === ExtensionMessageType.EnableExtension
+      );
       return sendResponse();
     case ExtensionMessageType.ClearHeaders:
       return sendResponse();

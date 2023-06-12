@@ -30,8 +30,13 @@ export const App = () => {
 
   const [extensionEnabled, setExtensionEnabled] = useState(true);
   const toggleEnabled = useCallback(async () => {
-    await sendExtensionMessage({ type: ExtensionMessageType.TogglePaused });
-    setExtensionEnabled(!extensionEnabled);
+    const isNowEnabled = !extensionEnabled;
+    await sendExtensionMessage({
+      type: isNowEnabled
+        ? ExtensionMessageType.EnableExtension
+        : ExtensionMessageType.DisableExtension,
+    });
+    setExtensionEnabled(isNowEnabled);
   }, [extensionEnabled]);
 
   const [showCredentialsScreen, setShowCredentialsScreen] = useState(false);
@@ -61,13 +66,11 @@ export const App = () => {
 
   const fetchExtensionEnabledFromStorage = async () => {
     const enabled = await getExtensionEnabledFromStorage();
-    console.log("EEEEE", { enabled });
     setExtensionEnabled(enabled || false);
   };
 
   const fetchDimensionsFromStorage = async () => {
     const initialDimensions = await getParsedDimensionsFromStorage();
-    console.log("initialDimensions", initialDimensions);
     setDimensionsFromStorage(initialDimensions);
   };
 
@@ -140,8 +143,11 @@ export const App = () => {
                       setCreds({ uri: "", apiKey: "" });
                     } else {
                       setShowCredentialsScreen(false);
-                      setExtensionEnabled(true);
                       setCreds(updatedCredentials);
+                      setExtensionEnabled(true);
+                      sendExtensionMessage({
+                        type: ExtensionMessageType.EnableExtension,
+                      });
                     }
                   }}
                 />

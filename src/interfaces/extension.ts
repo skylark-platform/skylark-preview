@@ -3,7 +3,8 @@ export enum ExtensionMessageType {
   GetActiveHeaders = "GetActiveHeaders",
   ClearHeaders = "ClearHeaders",
   RefreshTab = "RefreshTab",
-  TogglePaused = "TogglePaused",
+  EnableExtension = "EnableExtension",
+  DisableExtension = "DisableExtension",
 }
 
 export type ExtensionMessageValueHeaders = {
@@ -20,6 +21,7 @@ export type ExtensionMessage =
       type:
         | ExtensionMessageType.GetActiveHeaders
         | ExtensionMessageType.ClearHeaders
-        | ExtensionMessageType.TogglePaused
+        | ExtensionMessageType.EnableExtension
+        | ExtensionMessageType.DisableExtension
         | ExtensionMessageType.RefreshTab;
     };
