@@ -17,5 +17,5 @@ jobs:
           dest: foresight-extension.zip
       - uses: actions/upload-artifact@v3
         with:
-          name: foresight-extension-${ env.now }
+          name: foresight-extension-${{ env.now }}
           path: foresight-extension.zip
