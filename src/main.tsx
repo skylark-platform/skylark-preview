@@ -5,9 +5,7 @@ import { App } from "./app";
 import "./index.css";
 
 ReactDOM.createRoot(
-  document.getElementById(
-    "skylark-availability-extension-app-root"
-  ) as HTMLElement
+  document.getElementById("skylark-foresight-extension-app-root") as HTMLElement
 ).render(
   <React.StrictMode>
     <App />

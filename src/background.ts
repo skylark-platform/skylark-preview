@@ -125,7 +125,13 @@ const toggleExtensionPaused = async () => {
     const modifiers = await getModifiersFromStorage();
     await updateRules(modifiers);
   }
+
   await setExtensionEnabledToStorage(!extensionEnabled);
+  await chrome.action.setIcon({
+    path: extensionEnabled
+      ? "icons/logo-grayscale-32x32.png"
+      : "icons/logo-32x32.png",
+  });
 };
 
 const handleMessage = async (
