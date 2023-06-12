@@ -17,7 +17,7 @@ export const Header = ({
   toggleEnabled,
   onChangeCredentials,
 }: HeaderProps) => (
-  <header className="bg-nav-bar flex h-16 w-full items-center justify-between px-4">
+  <header className="flex h-16 w-full items-center justify-between bg-nav-bar px-4">
     <div className="flex items-center space-x-4">
       <a
         className=""
@@ -27,13 +27,13 @@ export const Header = ({
       >
         <SkylarkLogo className="w-8" />
       </a>
-      <h1 className="text-xl font-heading font-bold">{`Availability Modifier`}</h1>
+      <h1 className="font-heading text-xl font-bold">{`Foresight`}</h1>
     </div>
-    <div className="flex items-center font-body text-xs">
+    <div className="font-body flex items-center text-xs">
       {credentialsAdded && (
         <p
           className={clsx(
-            "text-error mr-2 transition-all",
+            "mr-2 text-error transition-all",
             !enabled ? "visible opacity-100" : "invisible opacity-0"
           )}
         >{`Intercepts paused`}</p>
