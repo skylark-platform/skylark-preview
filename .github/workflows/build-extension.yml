@@ -16,5 +16,5 @@ jobs:
           dest: foresight-extension.zip
       - uses: actions/upload-artifact@v3
         with:
-          name: foresight-extension
+          name: foresight-extension-$(date +'%Y-%m-%dT%H:%M:%S')
           path: foresight-extension.zip
