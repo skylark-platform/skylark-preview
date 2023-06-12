@@ -39,14 +39,13 @@ export const AvailabilityModifier = ({
     }
   }, [isDimensionsValuesLoading, dimensionsFromServer]);
 
-  const dimensions =
-    dimensionsFromStorage && isDimensionsValuesLoading
-      ? dimensionsFromStorage
-      : dimensionsFromServer;
+  const dimensions = isDimensionsValuesLoading
+    ? dimensionsFromStorage || []
+    : dimensionsFromServer;
 
   console.log({ dimensions });
   return (
-    <div className={clsx("w-full h-full relative", className)}>
+    <div className={clsx("relative h-full w-full", className)}>
       <div className="mt-4">
         <h2 className={clsx(headerClassName, "mb-4")}>{`Time Window`}</h2>
         <Input
@@ -69,7 +68,7 @@ export const AvailabilityModifier = ({
             !dimensionsFromStorage &&
             (dimensions || Array.from({ length: 2 })).map((_, i) => (
               <div
-                className="animate-pulse w-full mt-2 h-12 rounded-lg bg-gray-300"
+                className="mt-2 h-12 w-full animate-pulse rounded-lg bg-gray-300"
                 key={`skeleton-${i}`}
               ></div>
             ))}

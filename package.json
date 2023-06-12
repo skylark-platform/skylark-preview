@@ -8,9 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "tsc": "tsc",
-    "prettier": "prettier . --write",
-    "prettier:check": "prettier . --check"
+    "tsc": "tsc"
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.2",

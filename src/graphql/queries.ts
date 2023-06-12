@@ -15,3 +15,11 @@ export const LIST_AVAILABILITY_DIMENSIONS = gql`
     }
   }
 `;
+
+export const GET_ACTIVATION_STATUS = gql`
+  query MyQuery {
+    getActivationStatus {
+      active_version
+    }
+  }
+`;

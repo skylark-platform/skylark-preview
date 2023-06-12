@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { ExtensionStorageKeys } from "../constants";
 import { Input } from "./input";
 import { Button } from "./button";
+import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
 
 interface ConnectToSkylarkProps {
   className?: string;
@@ -10,7 +11,7 @@ interface ConnectToSkylarkProps {
     uri: string;
     apiKey: string;
   };
-  onUpdate: (apiKey: string) => void;
+  onUpdate: (creds?: { uri: string; apiKey: string }) => void;
 }
 
 export const ConnectToSkylark = ({
@@ -18,11 +19,10 @@ export const ConnectToSkylark = ({
   skylarkCreds: initialCreds,
   onUpdate,
 }: ConnectToSkylarkProps) => {
-  const [creds, setCreds] =
-    useState<{
-      uri: string;
-      apiKey: string;
-    }>(initialCreds);
+  const [creds, setCreds] = useState<{
+    uri: string;
+    apiKey: string;
+  }>(initialCreds);
 
   const updateCredentials = async (deleteCredentials?: boolean) => {
     await chrome.storage.sync.set({
@@ -33,12 +33,18 @@ export const ConnectToSkylark = ({
         ? ""
         : creds.apiKey,
     });
-    onUpdate(creds.apiKey);
+    if (deleteCredentials) {
+      setCreds({ uri: "", apiKey: "" });
+    }
+    onUpdate(deleteCredentials ? undefined : creds);
   };
 
+  const { isConnected, isLoading, invalidUri, invalidToken } =
+    useConnectedToSkylark(creds);
+
   return (
-    <div className={clsx("w-full h-full flex flex-col", className)}>
-      <h2 className="font-heading text-lg font-bold my-4">{`Enter your Skylark credentials`}</h2>
+    <div className={clsx("flex h-full w-full flex-col", className)}>
+      <h2 className="my-4 font-heading text-lg font-bold">{`Enter your Skylark credentials`}</h2>
       <Input
         className="my-4"
         label="API URL"
@@ -54,20 +60,30 @@ export const ConnectToSkylark = ({
         value={creds.apiKey}
         onChange={(apiKey) => setCreds({ ...creds, apiKey })}
       />
-      <div className="self-end">
-        <button
-          onClick={() => {
-            void updateCredentials(true);
-          }}
-        >{`Clear`}</button>
-        <Button
-          className="ml-4 mt-4"
-          disabled={!creds.apiKey || !creds.uri}
-          success
-          onClick={() => {
-            void updateCredentials();
-          }}
-        >{`Connect`}</Button>
+      <div className="flex items-center justify-between">
+        <div className="flex h-full items-center">
+          {(!isConnected || invalidUri || invalidToken) && (
+            <p className="text-error">Invalid Credentials</p>
+          )}
+        </div>
+        <div className="mt-4 flex items-center">
+          <button
+            onClick={() => {
+              void updateCredentials(true);
+            }}
+          >{`Clear`}</button>
+          <Button
+            className="ml-4"
+            disabled={!creds.apiKey || !creds.uri || !isConnected}
+            success
+            onClick={() => {
+              void updateCredentials();
+            }}
+            loading={isLoading}
+          >
+            {isLoading ? `Verifying...` : `Connect`}
+          </Button>
+        </div>
       </div>
     </div>
   );

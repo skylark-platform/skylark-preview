@@ -36,11 +36,13 @@ export const App = () => {
 
   const [showCredentialsScreen, setShowCredentialsScreen] = useState(false);
 
-  const [creds, setCreds] =
-    useState<{ uri: string; apiKey: string } | undefined>();
+  const [creds, setCreds] = useState<
+    { uri: string; apiKey: string } | undefined
+  >();
 
-  const [dimensionsFromStorage, setDimensionsFromStorage] =
-    useState<undefined | ParsedSkylarkDimensionsWithValues[]>();
+  const [dimensionsFromStorage, setDimensionsFromStorage] = useState<
+    undefined | ParsedSkylarkDimensionsWithValues[]
+  >();
 
   const [activeModifiers, setActiveModifiers] =
     useState<ExtensionMessageValueHeaders>({ timeTravel: "", dimensions: {} });
@@ -60,7 +62,7 @@ export const App = () => {
   const fetchExtensionEnabledFromStorage = async () => {
     const enabled = await getExtensionEnabledFromStorage();
     console.log("EEEEE", { enabled });
-    setExtensionEnabled(enabled);
+    setExtensionEnabled(enabled || false);
   };
 
   const fetchDimensionsFromStorage = async () => {
@@ -109,18 +111,21 @@ export const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex h-screen flex-grow flex-col items-start justify-start bg-white font-body">
+      <div className="font-body flex h-screen flex-grow flex-col items-start justify-start bg-white">
         <Header
           credentialsAdded={!!creds?.apiKey && !!creds?.uri}
           enabled={extensionEnabled}
           toggleEnabled={() => {
             void toggleEnabled();
           }}
-          onChangeCredentials={() =>
-            setShowCredentialsScreen(!showCredentialsScreen)
-          }
+          onChangeCredentials={() => {
+            if (showCredentialsScreen && !(creds?.apiKey && creds?.uri)) {
+              return;
+            }
+            setShowCredentialsScreen(!showCredentialsScreen);
+          }}
         />
-        <main className="flex h-full w-full flex-grow relative">
+        <main className="relative flex h-full w-full flex-grow">
           {!creds ? (
             <div className="my-8 px-4">{`Loading...`}</div>
           ) : (
@@ -129,10 +134,15 @@ export const App = () => {
                 <ConnectToSkylark
                   className="px-4"
                   skylarkCreds={creds}
-                  onUpdate={() => {
-                    setShowCredentialsScreen(false);
-                    setExtensionEnabled(true);
-                    void fetchCredentialsFromStorage();
+                  onUpdate={(updatedCredentials) => {
+                    if (!updatedCredentials) {
+                      setExtensionEnabled(false);
+                      setCreds({ uri: "", apiKey: "" });
+                    } else {
+                      setShowCredentialsScreen(false);
+                      setExtensionEnabled(true);
+                      setCreds(updatedCredentials);
+                    }
                   }}
                 />
               ) : (
@@ -154,7 +164,8 @@ export const App = () => {
         <Footer
           // isExtensionDisabled={!extensionEnabled}
           isHeadersUpdating={
-            isHeadersUpdating || activeModifiers !== debouncedActiveModifiers
+            extensionEnabled &&
+            (isHeadersUpdating || activeModifiers !== debouncedActiveModifiers)
           }
         />
       </div>

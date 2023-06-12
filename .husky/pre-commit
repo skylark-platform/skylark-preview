@@ -1,12 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn tsc
-
-yarn lint
-
-# yarn test
-
-yarn prettier
-
-git add .
+yarn tsc --noEmit && yarn eslint . && yarn prettier --write .
