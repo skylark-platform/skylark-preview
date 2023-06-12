@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { MdCancel, MdDone, MdUnfoldMore } from "react-icons/md";
 
@@ -36,8 +36,8 @@ export const DimensionCombobox = ({
   return (
     <Combobox value={selectedOption || ""} onChange={onChange}>
       <div className="relative mt-1">
-        <div className="relative w-full cursor-default text-sm py-1.5 rounded-lg border border-gray-200 text-gray-500 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-          <Combobox.Label className="absolute left-2 top-0 -translate-y-1/2 transform text-xs font-medium uppercase md:left-3 text-manatee-500">
+        <div className="relative w-full cursor-default rounded-lg border border-gray-200 py-1.5 text-left text-sm text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+          <Combobox.Label className="absolute left-2 top-0 -translate-y-1/2 transform text-xs font-medium uppercase text-manatee-500 md:left-3">
             <span className="bg-white px-2">{label}</span>
           </Combobox.Label>
 
@@ -48,18 +48,18 @@ export const DimensionCombobox = ({
               onChange={(event) => setQuery(event.target.value)}
             />
             <button className="absolute inset-y-0 right-0 top-0 flex items-center pr-2 text-manatee-500">
-              <MdUnfoldMore className="w-6 h-6" />
+              <MdUnfoldMore className="h-6 w-6" />
             </button>
           </Combobox.Button>
           {(query || selectedValue) && (
             <button
-              className="absolute inset-y-0 right-8 top-0 text-manatee-500 hover:text-brand-primary transition-colors"
+              className="absolute inset-y-0 right-8 top-0 text-manatee-500 transition-colors hover:text-brand-primary"
               onClick={() => {
                 onChange();
                 setQuery("");
               }}
             >
-              <MdCancel className="w-4 h-4" />
+              <MdCancel className="h-4 w-4" />
             </button>
           )}
         </div>
@@ -101,7 +101,6 @@ export const DimensionCombobox = ({
                             active ? "text-black" : "text-brand-primary"
                           }`}
                         >
-                          {/* <CheckIcon aria-hidden="true" className="h-5 w-5" /> */}
                           <MdDone aria-hidden="true" className="h-4 w-4" />
                         </span>
                       ) : null}

@@ -39,11 +39,11 @@ export const AvailabilityModifier = ({
     }
   }, [isDimensionsValuesLoading, dimensionsFromServer]);
 
-  const dimensions = isDimensionsValuesLoading
-    ? dimensionsFromStorage || []
-    : dimensionsFromServer;
+  const dimensions =
+    isDimensionsValuesLoading && dimensionsFromStorage
+      ? dimensionsFromStorage
+      : dimensionsFromServer;
 
-  console.log({ dimensions });
   return (
     <div className={clsx("relative h-full w-full", className)}>
       <div className="mt-4">

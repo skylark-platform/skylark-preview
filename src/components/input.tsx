@@ -18,15 +18,15 @@ export const Input = ({
   className,
   onChange,
 }: InputProps) => (
-  <div className={clsx("w-full relative mt-2", className)}>
+  <div className={clsx("relative mt-2 w-full", className)}>
     <label
-      className="absolute left-2 top-0 -translate-y-1/2 transform text-xs font-medium uppercase md:left-3  text-manatee-500"
+      className="absolute left-2 top-0 -translate-y-1/2 transform text-xs font-medium uppercase text-manatee-500  md:left-3"
       htmlFor={name}
     >
       <span className="bg-white px-2">{label}</span>
     </label>
     <input
-      className="form-input text-sm p-3 md:p-5 rounded-lg border border-gray-200 text-gray-500 w-full"
+      className="form-input w-full rounded-lg border border-gray-200 p-3 text-sm text-gray-500 md:p-5"
       name={name}
       type={type}
       value={value}

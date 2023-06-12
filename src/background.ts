@@ -73,25 +73,6 @@ const convertModifiersToRules = ({
 
   return rules;
 };
-console.log(`this is background service worker`);
-
-// chrome.tabs.onCreated.addListener((tab) => {
-//   // wait for contenscript to load
-//   chrome.runtime.onMessage.addListener((isLoaded, sender, sendResponse) => {
-//     console.log({ isLoaded, sender });
-//     if (isLoaded) {
-//       (async () => {
-//         const response = await chrome.tabs.sendMessage(tab.id, "test");
-//         console.log(response);
-//       })();
-//     }
-//   });
-// });
-
-// chrome.declarativeNetRequest.updateDynamicRules({
-//   removeRuleIds: rules.map((rule) => rule.id), // remove existing rules
-//   addRules: rules,
-// });
 
 const getActiveRules = () => chrome.declarativeNetRequest.getDynamicRules();
 
@@ -169,44 +150,11 @@ const handleMessage = async (
 };
 
 chrome.runtime.onMessage.addListener(
-  (message: ExtensionMessage, sender, sendResponse) => {
-    console.log("message received", message);
-
-    // if (message.type === "update-headers") {
-    //   const rules = convertHeadersToRules(message.value);
-
-    //   chrome.declarativeNetRequest
-    //     .getDynamicRules()
-    //     .then((oldRules) => {
-    //       console.log("rules", { rules, oldRules });
-
-    //       void chrome.declarativeNetRequest
-    //         .updateDynamicRules({
-    //           removeRuleIds: oldRules.map((rule) => rule.id), // remove existing rules
-    //           addRules: rules,
-    //         })
-    //         .then(sendResponse);
-    //     })
-    //     .catch((err) => console.log("active rules err", err));
-    //   return true;
-    // }
-
+  (message: ExtensionMessage, _, sendResponse) => {
     void handleMessage(message, sendResponse);
-
     return true;
   }
 );
-
-chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-  void getActiveRules().then((rules) => {
-    console.log("getActiveRules for Tab", rules, tabs);
-    void chrome.runtime.sendMessage(
-      // tabs[0].id,
-      { action: "open_dialog_box", value: rules },
-      (response) => {}
-    );
-  });
-});
 
 console.log("Service worker started.");
 

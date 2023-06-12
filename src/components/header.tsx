@@ -1,4 +1,3 @@
-import React from "react";
 import clsx from "clsx";
 import { SkylarkLogo } from "./skylarkBranding";
 import { Switch } from "./switch";
