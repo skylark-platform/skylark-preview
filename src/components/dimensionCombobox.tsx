@@ -43,7 +43,7 @@ export const DimensionCombobox = ({
 
           <Combobox.Button as="div" className="">
             <Combobox.Input
-              className="w-full border-none py-2 pl-4 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+              className="w-full border-none py-2 pl-4 pr-10 text-sm leading-5 text-gray-800 focus:ring-0"
               displayValue={(option: DimensionComboboxOption) => option.label}
               onChange={(event) => setQuery(event.target.value)}
             />

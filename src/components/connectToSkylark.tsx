@@ -4,6 +4,7 @@ import { ExtensionStorageKeys } from "../constants";
 import { Input } from "./input";
 import { Button } from "./button";
 import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ConnectToSkylarkProps {
   className?: string;
@@ -42,6 +43,8 @@ export const ConnectToSkylark = ({
   const { isConnected, isLoading, invalidUri, invalidToken } =
     useConnectedToSkylark(creds);
 
+  const queryClient = useQueryClient();
+
   return (
     <div className={clsx("flex h-full w-full flex-col", className)}>
       <h2 className="my-4 font-heading text-lg font-bold">{`Enter your Skylark credentials`}</h2>
@@ -65,11 +68,17 @@ export const ConnectToSkylark = ({
           {(!isConnected || invalidUri || invalidToken) && (
             <p className="text-error">Invalid Credentials</p>
           )}
+          {isConnected && !creds?.apiKey?.startsWith("skylark-admin-") && (
+            <p className="text-error">
+              Extension may not work with a non-admin API key.
+            </p>
+          )}
         </div>
         <div className="mt-4 flex items-center">
           <button
             onClick={() => {
               void updateCredentials(true);
+              queryClient.clear();
             }}
           >{`Clear`}</button>
           <Button
@@ -78,6 +87,12 @@ export const ConnectToSkylark = ({
             success
             onClick={() => {
               void updateCredentials();
+              if (
+                creds.apiKey !== initialCreds.apiKey ||
+                creds.uri !== initialCreds.uri
+              ) {
+                queryClient.clear();
+              }
             }}
             loading={isLoading}
           >

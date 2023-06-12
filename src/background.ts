@@ -1,4 +1,3 @@
-import { EXTENSION_RULES_URL_FILTER } from "./constants";
 import {
   ExtensionMessage,
   ExtensionMessageType,
@@ -14,8 +13,9 @@ import {
 const convertModifiersToRules = ({
   dimensions,
   timeTravel,
+  uri,
   apiKey,
-}: ExtensionMessageValueHeaders & { apiKey: string }):
+}: ExtensionMessageValueHeaders & { apiKey: string; uri: string }):
   | chrome.declarativeNetRequest.Rule[]
   | undefined => {
   if (!apiKey) {
@@ -54,7 +54,7 @@ const convertModifiersToRules = ({
     value: apiKey,
   });
 
-  console.log({ requestHeaders });
+  console.log({ requestHeaders, uri });
 
   const rules: chrome.declarativeNetRequest.Rule[] = [
     {
@@ -65,7 +65,7 @@ const convertModifiersToRules = ({
         requestHeaders,
       },
       condition: {
-        urlFilter: EXTENSION_RULES_URL_FILTER,
+        urlFilter: uri,
         resourceTypes: allResourceTypes,
       },
     },
@@ -79,9 +79,9 @@ const getActiveRules = () => chrome.declarativeNetRequest.getDynamicRules();
 const updateRules = async (modifiers: ExtensionMessageValueHeaders) => {
   const activeRules = await getActiveRules();
 
-  const { apiKey } = await getCredentialsFromStorage();
+  const { uri, apiKey } = await getCredentialsFromStorage();
 
-  const rules = convertModifiersToRules({ ...modifiers, apiKey });
+  const rules = convertModifiersToRules({ ...modifiers, uri, apiKey });
 
   const updateRuleOptions: chrome.declarativeNetRequest.UpdateRuleOptions = {
     removeRuleIds: activeRules.map((rule) => rule.id), // remove existing rules

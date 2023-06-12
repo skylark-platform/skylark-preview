@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 
-import { GET_ACTIVATION_STATUS } from "../graphql";
+import { GET_SKYLARK_OBJECT_TYPES } from "../graphql";
 import { useDebounce } from "use-debounce";
 import { useEffect } from "react";
 
@@ -17,12 +17,12 @@ export const useConnectedToSkylark = (credentials: {
     object,
     { response?: { errors?: { errorType?: string; message?: string }[] } }
   >({
-    queryKey: ["credentialValidator", GET_ACTIVATION_STATUS, credentials],
+    queryKey: ["credentialValidator", GET_SKYLARK_OBJECT_TYPES, credentials],
     queryFn: uri
       ? async () => {
           return request(
             uri,
-            GET_ACTIVATION_STATUS,
+            GET_SKYLARK_OBJECT_TYPES,
             {},
             {
               Authorization: apiKey,

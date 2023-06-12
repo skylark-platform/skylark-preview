@@ -16,10 +16,13 @@ export const LIST_AVAILABILITY_DIMENSIONS = gql`
   }
 `;
 
-export const GET_ACTIVATION_STATUS = gql`
-  query MyQuery {
-    getActivationStatus {
-      active_version
+// This is used to check the user is connected to Skylark + in tests
+export const GET_SKYLARK_OBJECT_TYPES = gql`
+  query GET_SKYLARK_OBJECT_TYPES {
+    __type(name: "Metadata") {
+      possibleTypes {
+        name
+      }
     }
   }
 `;

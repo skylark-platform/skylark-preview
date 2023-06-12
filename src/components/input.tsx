@@ -26,7 +26,7 @@ export const Input = ({
       <span className="bg-white px-2">{label}</span>
     </label>
     <input
-      className="form-input w-full rounded-lg border border-gray-200 p-3 text-sm text-gray-500 md:p-5"
+      className="form-input w-full rounded-lg border border-gray-200 p-3 text-sm text-gray-800 md:p-5"
       name={name}
       type={type}
       value={value}

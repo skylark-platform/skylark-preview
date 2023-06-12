@@ -97,7 +97,16 @@ export const AvailabilityModifier = ({
               </div>
             );
           })}
+          {dimensionsFromServer && dimensionsFromServer.length === 0 && (
+            <p className="text-gray-500">No Audience Dimensions configured.</p>
+          )}
         </div>
+        {dimensions && dimensions.length > 0 && (
+          <p className="my-2 text-gray-500">
+            Any unset Audience Dimensions will fallback to the value specified
+            in the actual query.
+          </p>
+        )}
       </div>
     </div>
   );
