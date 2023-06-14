@@ -1,3 +1,8 @@
+export interface SkylarkCredentials {
+  uri: string;
+  apiKey: string;
+}
+
 // Unparsed Skylark Objects
 export interface SkylarkGraphQLAvailabilityDimensionValue {
   uid: string;

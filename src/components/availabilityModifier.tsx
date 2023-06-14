@@ -4,6 +4,7 @@ import { useAvailabilityDimensionsWithValues } from "../hooks/useAvailabilityDim
 import {
   ExtensionMessageValueHeaders,
   ParsedSkylarkDimensionsWithValues,
+  SkylarkCredentials,
 } from "../interfaces";
 import { DimensionCombobox } from "./dimensionCombobox";
 import { Input } from "./input";
@@ -11,10 +12,7 @@ import { setParsedDimensionsToStorage } from "../lib/storage";
 
 interface AvailabilityModifierProps {
   className: string;
-  skylarkCreds: {
-    uri: string;
-    apiKey: string;
-  };
+  skylarkCreds: SkylarkCredentials;
   activeModifiers: ExtensionMessageValueHeaders;
   disabled?: boolean;
   dimensionsFromStorage?: ParsedSkylarkDimensionsWithValues[] | undefined;

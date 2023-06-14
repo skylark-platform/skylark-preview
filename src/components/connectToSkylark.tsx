@@ -1,18 +1,16 @@
 import { useState } from "react";
 import clsx from "clsx";
-import { ExtensionStorageKeys } from "../constants";
 import { Input } from "./input";
 import { Button } from "./button";
 import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
 import { useQueryClient } from "@tanstack/react-query";
+import { SkylarkCredentials } from "../interfaces";
+import { setCredentialsToStorage } from "../lib/storage";
 
 interface ConnectToSkylarkProps {
   className?: string;
-  skylarkCreds: {
-    uri: string;
-    apiKey: string;
-  };
-  onUpdate: (creds?: { uri: string; apiKey: string }) => void;
+  skylarkCreds: SkylarkCredentials;
+  onUpdate: (creds?: SkylarkCredentials) => void;
 }
 
 export const ConnectToSkylark = ({
@@ -20,28 +18,23 @@ export const ConnectToSkylark = ({
   skylarkCreds: initialCreds,
   onUpdate,
 }: ConnectToSkylarkProps) => {
-  const [creds, setCreds] = useState<{
-    uri: string;
-    apiKey: string;
-  }>(initialCreds);
+  const [creds, setCreds] = useState<SkylarkCredentials>(initialCreds);
 
   const updateCredentials = async (deleteCredentials?: boolean) => {
-    await chrome.storage.sync.set({
-      [ExtensionStorageKeys.SkylarkUri]: deleteCredentials ? "" : creds.uri,
-    });
-    await chrome.storage.session.set({
-      [ExtensionStorageKeys.SkylarkApiKey]: deleteCredentials
-        ? ""
-        : creds.apiKey,
-    });
+    const emptyCredentials: SkylarkCredentials = { uri: "", apiKey: "" };
+    await setCredentialsToStorage(deleteCredentials ? emptyCredentials : creds);
     if (deleteCredentials) {
-      setCreds({ uri: "", apiKey: "" });
+      setCreds(emptyCredentials);
     }
     onUpdate(deleteCredentials ? undefined : creds);
   };
 
-  const { isConnected, isLoading, invalidUri, invalidToken } =
-    useConnectedToSkylark(creds);
+  const {
+    isConnected,
+    isLoading: isValidatingCredentials,
+    invalidUri,
+    invalidToken,
+  } = useConnectedToSkylark(creds);
 
   const queryClient = useQueryClient();
 
@@ -83,7 +76,12 @@ export const ConnectToSkylark = ({
           >{`Clear`}</button>
           <Button
             className="ml-4"
-            disabled={!creds.apiKey || !creds.uri || !isConnected}
+            disabled={
+              !creds.apiKey ||
+              !creds.uri ||
+              !isConnected ||
+              isValidatingCredentials
+            }
             success
             onClick={() => {
               void updateCredentials();
@@ -94,9 +92,9 @@ export const ConnectToSkylark = ({
                 queryClient.clear();
               }
             }}
-            loading={isLoading}
+            loading={isValidatingCredentials}
           >
-            {isLoading ? `Verifying...` : `Connect`}
+            {isValidatingCredentials ? `Verifying...` : `Connect`}
           </Button>
         </div>
       </div>

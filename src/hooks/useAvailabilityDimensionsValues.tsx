@@ -74,7 +74,7 @@ export const useAvailabilityDimensionsWithValues = (
       });
     },
     getNextPageParam,
-    enabled: !!dimensionsWithoutValues,
+    enabled: !!(uri && token && dimensionsWithoutValues),
   });
 
   // This if statement ensures that all data is fetched

@@ -13,9 +13,9 @@ import {
   ExtensionMessageType,
   ExtensionMessageValueHeaders,
   ParsedSkylarkDimensionsWithValues,
+  SkylarkCredentials,
 } from "./interfaces";
 import { sendExtensionMessage } from "./lib/utils";
-import { ExtensionStorageKeys } from "./constants";
 import { ConnectToSkylark } from "./components/connectToSkylark";
 import { DisabledOverlay } from "./components/disabledOverlay";
 import {
@@ -41,9 +41,7 @@ export const App = () => {
 
   const [showCredentialsScreen, setShowCredentialsScreen] = useState(false);
 
-  const [creds, setCreds] = useState<
-    { uri: string; apiKey: string } | undefined
-  >();
+  const [creds, setCreds] = useState<SkylarkCredentials | undefined>();
 
   const [dimensionsFromStorage, setDimensionsFromStorage] = useState<
     undefined | ParsedSkylarkDimensionsWithValues[]
@@ -89,10 +87,6 @@ export const App = () => {
       type: ExtensionMessageType.UpdateHeaders,
       value: modifiers,
     });
-    await chrome.storage.local.set({
-      [ExtensionStorageKeys.Modifiers]: modifiers,
-    });
-
     setIsHeadersUpdating(false);
   };
 

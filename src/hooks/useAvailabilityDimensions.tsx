@@ -21,6 +21,7 @@ export const useAvailabilityDimensions = ({
 }) => {
   const { data, fetchNextPage, hasNextPage, ...rest } =
     useInfiniteQuery<GQLSkylarkListAvailabilityDimensionsResponse>({
+      enabled: !!(uri && token),
       queryKey: [
         QueryKeys.AvailabilityDimensions,
         LIST_AVAILABILITY_DIMENSIONS,

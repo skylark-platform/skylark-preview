@@ -2,6 +2,7 @@ import { ExtensionStorageKeys } from "../constants";
 import {
   ExtensionMessageValueHeaders,
   ParsedSkylarkDimensionsWithValues,
+  SkylarkCredentials,
 } from "../interfaces";
 
 export const getCredentialsFromStorage = async () => {
@@ -21,6 +22,18 @@ export const getCredentialsFromStorage = async () => {
   };
 };
 
+export const setCredentialsToStorage = async ({
+  uri,
+  apiKey,
+}: SkylarkCredentials) => {
+  await chrome.storage.sync.set({
+    [ExtensionStorageKeys.SkylarkUri]: uri,
+  });
+  await chrome.storage.session.set({
+    [ExtensionStorageKeys.SkylarkApiKey]: apiKey,
+  });
+};
+
 export const getModifiersFromStorage =
   async (): Promise<ExtensionMessageValueHeaders> => {
     const res = (await chrome.storage.local.get(
@@ -29,6 +42,15 @@ export const getModifiersFromStorage =
 
     return res[ExtensionStorageKeys.Modifiers];
   };
+
+export const setModifiersToStorage = async (
+  modifiers: ExtensionMessageValueHeaders
+) => {
+  console.log("[setModifiersToStorage] modifiers saved to storage:", modifiers);
+  await chrome.storage.local.set({
+    [ExtensionStorageKeys.Modifiers]: modifiers,
+  });
+};
 
 export const getExtensionEnabledFromStorage = async (): Promise<boolean> => {
   const res = (await chrome.storage.local.get(
@@ -39,6 +61,10 @@ export const getExtensionEnabledFromStorage = async (): Promise<boolean> => {
 };
 
 export const setExtensionEnabledToStorage = async (enabled: boolean) => {
+  console.log(
+    "[setExtensionEnabledToStorage] enabled state updated:",
+    enabled ? "ENABLED" : "DISABLED"
+  );
   await chrome.storage.local.set({
     [ExtensionStorageKeys.ExtensionEnabled]: enabled,
   });
@@ -61,6 +87,10 @@ export const getParsedDimensionsFromStorage = async (): Promise<
 export const setParsedDimensionsToStorage = async (
   dimensions: ParsedSkylarkDimensionsWithValues[]
 ) => {
+  console.log(
+    "[setParsedDimensionsToStorage] dimensions from server saved to storage:",
+    dimensions
+  );
   await chrome.storage.local.set({
     [ExtensionStorageKeys.Dimensions]: dimensions,
   });

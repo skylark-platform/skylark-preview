@@ -4,11 +4,9 @@ import request from "graphql-request";
 import { GET_SKYLARK_OBJECT_TYPES } from "../graphql";
 import { useDebounce } from "use-debounce";
 import { useEffect } from "react";
+import { SkylarkCredentials } from "../interfaces";
 
-export const useConnectedToSkylark = (credentials: {
-  uri: string;
-  apiKey: string;
-}) => {
+export const useConnectedToSkylark = (credentials: SkylarkCredentials) => {
   const [{ uri, apiKey }] = useDebounce(credentials, 500);
 
   const enabled = !!uri;
@@ -48,7 +46,9 @@ export const useConnectedToSkylark = (credentials: {
     enabled && !!(!invalidUri && !invalidToken && (isLoading || isSuccess));
 
   return {
-    isLoading: enabled && isLoading,
+    isLoading:
+      enabled &&
+      (isLoading || credentials.uri !== uri || credentials.apiKey !== apiKey),
     isConnected,
     invalidUri,
     invalidToken,
