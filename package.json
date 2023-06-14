@@ -2,13 +2,14 @@
   "name": "skylark-foresight",
   "description": "Modify your Skylark Availability Rules directly on your website.",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest --config vitest.config.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.2",
@@ -28,6 +29,9 @@
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.17",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/chrome": "^0.0.237",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
@@ -38,13 +42,16 @@
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "husky": ">=6",
+    "jsdom": "^22.1.0",
+    "msw": "^1.2.2",
     "postcss": "^8.4.24",
     "postcss-parent-selector": "^1.0.0",
-    "husky": ">=6",
     "prettier": "2.5.1",
     "prettier-plugin-tailwindcss": "0.2.7",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.2",
-    "vite": "~4.2.2"
+    "vite": "~4.2.2",
+    "vitest": "^0.32.0"
   }
 }
