@@ -31,7 +31,7 @@ const convertModifiersToRules = ({
 
   const requestHeaders: chrome.declarativeNetRequest.ModifyHeaderInfo[] =
     Object.entries(dimensions)
-      .filter(([_, value]) => value)
+      .filter(([, value]) => value)
       .map(([dimension, value]) => ({
         operation: chrome.declarativeNetRequest.HeaderOperation.SET,
         header: `x-sl-dimension-${dimension}`,
