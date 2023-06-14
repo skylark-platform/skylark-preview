@@ -61,6 +61,15 @@ Enhance your content strategy by seamlessly modifying Availability Rules directl
 
 With Foresight, you gain the ability to preview your users’ experience from anywhere in the world, at any time. Stay one step ahead by planning ahead and ensuring seamless content availability. Unleash the true potential of your streaming platform with Foresight, an indispensable tool for content creators and strategists.
 
+### How it works
+
+Once installed and configured with your Skylark credentials, Foresight intercepts requests to your Skylark and modifies its headers.
+
+You are able to:
+
+1. Time Travel in the request, meaning you can preview content that is availabile in the future.
+2. Override Availability Dimensions, meaning you can preview how your app appears to any user type available in your Skylark.
+
 ---
 
 <br />
