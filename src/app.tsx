@@ -148,7 +148,6 @@ export const App = () => {
               ) : (
                 <>
                   <DisabledOverlay show={!extensionEnabled} />
-
                   <AvailabilityModifier
                     activeModifiers={activeModifiers}
                     className="mb-10 px-4"
@@ -162,7 +161,6 @@ export const App = () => {
           )}
         </main>
         <Footer
-          // isExtensionDisabled={!extensionEnabled}
           isHeadersUpdating={
             extensionEnabled &&
             (isHeadersUpdating || activeModifiers !== debouncedActiveModifiers)

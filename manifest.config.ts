@@ -34,13 +34,5 @@ export default defineManifest(() => ({
     type: "module",
   },
   host_permissions: ["<all_urls>"],
-  permissions: [
-    "background",
-    "tabs",
-
-    "storage",
-    "declarativeNetRequest",
-    // "declarativeNetRequestWithHostAccess",
-    // "declarativeNetRequestFeedback",
-  ],
+  permissions: ["background", "tabs", "storage", "declarativeNetRequest"],
 }));

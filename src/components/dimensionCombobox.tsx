@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { MdCancel, MdDone, MdUnfoldMore } from "react-icons/md";
+import clsx from "clsx";
 
 interface DimensionComboboxOption {
   value: string;
@@ -89,17 +90,19 @@ export const DimensionCombobox = ({
                   {({ selected, active }) => (
                     <>
                       <span
-                        className={`block truncate ${
+                        className={clsx(
+                          "`block truncate",
                           selected ? "font-medium" : "font-normal"
-                        }`}
+                        )}
                       >
                         {option.label}
                       </span>
                       {selected ? (
                         <span
-                          className={`absolute inset-y-0 left-0 top-0 flex items-center pl-1 text-lg ${
+                          className={clsx(
+                            "absolute inset-y-0 left-0 top-0 flex items-center pl-1 text-lg",
                             active ? "text-black" : "text-brand-primary"
-                          }`}
+                          )}
                         >
                           <MdDone aria-hidden="true" className="h-4 w-4" />
                         </span>

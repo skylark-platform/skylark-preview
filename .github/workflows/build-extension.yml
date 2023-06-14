@@ -11,10 +11,7 @@ jobs:
       - run: echo "now=$(date +'%Y%m%d-%H%M')" >> "$GITHUB_ENV"
       - run: yarn
       - run: yarn build
-      - uses: vimtor/action-zip@v1.1
-        with:
-          files: dist
-          dest: foresight-extension.zip
+      - run: zip -r foresight-extension.zip ./dist/
       - uses: actions/upload-artifact@v3
         with:
           name: foresight-extension-${{ env.now }}

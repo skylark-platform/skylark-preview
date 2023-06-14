@@ -20,7 +20,6 @@ export const Footer = ({ isHeadersUpdating }: FooterProps) => (
       disabled={isHeadersUpdating}
       onClick={refreshTab}
     >{`Refresh`}</Button>
-    {/* <p>{`Rules are updated automatically, you may need to refresh to see the changes.`}</p> */}
     {isHeadersUpdating && (
       <div className="absolute inset-y-0 right-0 flex items-center justify-end bg-manatee-200 px-8 text-brand-primary">
         <p>{`Updating Rules`}</p>
