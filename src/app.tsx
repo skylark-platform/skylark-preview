@@ -54,12 +54,12 @@ export const App = () => {
 
   const fetchCredentialsFromStorage = async () => {
     const storageCreds = await getCredentialsFromStorage();
-    setCreds(storageCreds);
+    if (storageCreds) setCreds(storageCreds);
   };
 
   const fetchModifiersFromStorage = async () => {
     const initialModifiers = await getModifiersFromStorage();
-    setActiveModifiers(initialModifiers);
+    if (initialModifiers) setActiveModifiers(initialModifiers);
   };
 
   const fetchExtensionEnabledFromStorage = async () => {
@@ -69,7 +69,7 @@ export const App = () => {
 
   const fetchDimensionsFromStorage = async () => {
     const initialDimensions = await getParsedDimensionsFromStorage();
-    setDimensionsFromStorage(initialDimensions);
+    if (initialDimensions) setDimensionsFromStorage(initialDimensions);
   };
 
   useEffect(() => {

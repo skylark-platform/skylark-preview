@@ -14,7 +14,7 @@ export default defineManifest(({ mode }) => {
 
   let name = appName;
   if (mode !== "production") {
-    name = mode === "staging" ? `${name} (staging)` : `${name} (development)`;
+    name = mode === "staging" ? `${name} [STAGING]` : `${name} [DEVELOPMENT]`;
   }
 
   return {
