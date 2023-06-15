@@ -1,13 +1,15 @@
 import { vi } from "vitest";
 import { ExtensionStorageKeys } from "./src/constants";
-import { ExtensionMessageValueHeaders, ParsedSkylarkDimensionsWithValues } from "./src/interfaces";
+import {
+  ExtensionMessageValueHeaders,
+  ParsedSkylarkDimensionsWithValues,
+} from "./src/interfaces";
 
-import matchers from '@testing-library/jest-dom/matchers'
-import { expect } from 'vitest'
-import { server } from './src/__mocks__/server'
+import matchers from "@testing-library/jest-dom/matchers";
+import { expect } from "vitest";
+import { server } from "./src/__mocks__/server";
 
-
-expect.extend(matchers)
+expect.extend(matchers);
 
 const defaultDimensions: ParsedSkylarkDimensionsWithValues[] = [
   {
@@ -30,8 +32,8 @@ const defaultDimensions: ParsedSkylarkDimensionsWithValues[] = [
         slug: "premium",
         title: "Premium",
         description: "",
-      }
-    ]
+      },
+    ],
   },
   {
     uid: "dimension_2",
@@ -53,16 +55,19 @@ const defaultDimensions: ParsedSkylarkDimensionsWithValues[] = [
         slug: "dt2",
         title: "Mobile",
         description: "",
-      }
-    ]
+      },
+    ],
   },
-]
+];
 
 const storageGetHandler = () => {
   return {
-    [ExtensionStorageKeys.Dimensions]:defaultDimensions,
+    [ExtensionStorageKeys.Dimensions]: defaultDimensions,
     [ExtensionStorageKeys.ExtensionEnabled]: true,
-    [ExtensionStorageKeys.Modifiers]: { timeTravel: "", dimensions: {} } satisfies ExtensionMessageValueHeaders,
+    [ExtensionStorageKeys.Modifiers]: {
+      timeTravel: "",
+      dimensions: {},
+    } satisfies ExtensionMessageValueHeaders,
     [ExtensionStorageKeys.SkylarkUri]: "https://skylark.com/graphql",
     [ExtensionStorageKeys.SkylarkApiKey]: "api-key",
   };
@@ -91,11 +96,11 @@ const chrome = {
 vi.stubGlobal("chrome", chrome);
 
 // Establish API mocking before all tests.
-beforeAll(() => server.listen())
+beforeAll(() => server.listen());
 
 // Reset any request handlers that we may add during the tests,
 // so they don't affect other tests.
-afterEach(() => server.resetHandlers())
+afterEach(() => server.resetHandlers());
 
 // Clean up after the tests are finished.
-afterAll(() => server.close())
+afterAll(() => server.close());
