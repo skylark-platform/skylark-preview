@@ -26,7 +26,7 @@ export const Header = ({
       >
         <SkylarkLogo className="w-8" />
       </a>
-      <h1 className="font-heading text-xl font-bold">{`Skylark Foresight`}</h1>
+      <h1 className="font-heading text-xl font-bold">{`Skylark Preview`}</h1>
     </div>
     <div className="font-body flex items-center text-xs">
       {credentialsAdded && (

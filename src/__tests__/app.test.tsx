@@ -15,7 +15,7 @@ describe("App", () => {
   it("renders the app as expected", async () => {
     await act(async () => render(<App />));
 
-    expect(screen.getByText("Skylark Foresight")).toBeInTheDocument();
+    expect(screen.getByText("Skylark Preview")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Refresh" })).toBeInTheDocument();
   });
 

@@ -10,7 +10,7 @@ const [major, minor, patch] = version
   .split(/[.-]/);
 
 export default defineManifest(({ mode }) => {
-  const appName = "Skylark Foresight";
+  const appName = "Skylark Preview";
 
   let name = appName;
   if (mode !== "production") {

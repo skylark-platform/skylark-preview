@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-#skylark-foresight-extension-app-root {
+#skylark-preview-extension-app-root {
   max-width: 400px;
   max-height: 600px;
   height: 100%;

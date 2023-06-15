@@ -14,7 +14,7 @@
     <img src="./docs/assets/icon-skylark-blue.png" alt="Logo" width="100" height="100">
   </a>
 
-  <h3 align="center">Skylark Foresight</h3>
+  <h3 align="center">Skylark Preview</h3>
 
   <p align="center">
     Preview your users' experience on your Skylark powered Streaming app by modifying active Availability Rules directly in Google Chrome.
@@ -53,17 +53,17 @@
 
 ## About The Project
 
-![Foresight Screen Shot][foresight-screenshot]
+![Preview Screen Shot][preview-screenshot]
 
-Introducing Foresight, the cutting-edge Google Chrome extension designed for Skylark-powered streaming platforms.
+Introducing Preview, the cutting-edge Google Chrome extension designed for Skylark-powered streaming platforms.
 
 Enhance your content strategy by seamlessly modifying Availability Rules directly on the page.
 
-With Foresight, you gain the ability to preview your users’ experience from anywhere in the world, at any time. Stay one step ahead by planning ahead and ensuring seamless content availability. Unleash the true potential of your streaming platform with Foresight, an indispensable tool for content creators and strategists.
+With Preview, you gain the ability to preview your users’ experience from anywhere in the world, at any time. Stay one step ahead by planning ahead and ensuring seamless content availability. Unleash the true potential of your streaming platform with Preview, an indispensable tool for content creators and strategists.
 
 ### How it works
 
-Once installed and configured with your Skylark credentials, Foresight intercepts requests to your Skylark and modifies its headers.
+Once installed and configured with your Skylark credentials, Preview intercepts requests to your Skylark and modifies its headers.
 
 You are able to:
 
@@ -116,7 +116,7 @@ yarn build
 ### Publish to Chrome Web Store
 
 1. Build the extension
-2. Zip up the `dist` directory (`zip -r foresight.zip ./dist/`)
+2. Zip up the `dist` directory (`zip -r preview.zip ./dist/`)
 3. Follow the instructions on Google to submit it to the Web Store: https://developer.chrome.com/docs/webstore/publish/
 
 ## Contributing
@@ -140,7 +140,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Skylark Support - support@skylarkplatform.com
 
-Project Link: [https://github.com/skylark-platform/skylark-foresight](https://github.com/skylark-platform/skylark-foresight)
+Project Link: [https://github.com/skylark-platform/skylark-preview](https://github.com/skylark-platform/skylark-preview)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -149,7 +149,7 @@ Project Link: [https://github.com/skylark-platform/skylark-foresight](https://gi
 [license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
 [prs-welcome]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge
 [prs-welcome-url]: http://makeapullrequest.com
-[foresight-screenshot]: ./docs/assets/screenshot.png
+[preview-screenshot]: ./docs/assets/screenshot.png
 [react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [react-url]: https://reactjs.org/
 [tailwind-css]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white

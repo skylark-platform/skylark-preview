@@ -17,8 +17,8 @@ jobs:
       - name: Build Staging
         if: ${{ github.ref_name != 'main' }}
         run: yarn build --mode staging
-      - run: zip -r foresight-extension.zip ./dist/
+      - run: zip -r preview-extension.zip ./dist/
       - uses: actions/upload-artifact@v3
         with:
-          name: foresight-extension-${{ env.now }}
-          path: foresight-extension.zip
+          name: preview-extension-${{ env.now }}
+          path: preview-extension.zip
