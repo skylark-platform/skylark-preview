@@ -141,10 +141,10 @@ const reloadCurrentTab = async () => {
 };
 
 const enableExtension = async () => {
+  await setExtensionEnabledToStorage(true);
   const modifiers = await getModifiersFromStorage();
   const rules = await updateActiveRulesIfEnabled(modifiers);
 
-  await setExtensionEnabledToStorage(true);
   await chrome.action.setIcon({
     path: "icons/logo-32x32.png",
   });
@@ -153,6 +153,7 @@ const enableExtension = async () => {
 };
 
 const disableExtension = async () => {
+  await setExtensionEnabledToStorage(false);
   const activeRules = await getActiveRules();
 
   const updateRuleOptions: chrome.declarativeNetRequest.UpdateRuleOptions = {
@@ -162,7 +163,6 @@ const disableExtension = async () => {
 
   await chrome.declarativeNetRequest.updateDynamicRules(updateRuleOptions);
 
-  await setExtensionEnabledToStorage(false);
   await chrome.action.setIcon({
     path: "icons/logo-grayscale-32x32.png",
   });
