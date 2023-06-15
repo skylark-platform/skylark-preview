@@ -70,41 +70,44 @@ export const AvailabilityModifier = ({
                 key={`skeleton-${i}`}
               ></div>
             ))}
-          {dimensions?.map((dimension) => {
-            const options = dimension.values.map(({ slug, title }) => ({
-              value: slug,
-              label: title || slug,
-            }));
-            return (
-              <div className="my-2 w-full" key={dimension.uid}>
-                <DimensionCombobox
-                  key={dimension.uid}
-                  label={dimension.title || dimension.slug}
-                  options={options}
-                  selectedValue={activeModifiers.dimensions[dimension.slug]}
-                  onChange={(opt) =>
-                    setActiveModifiers({
-                      ...activeModifiers,
-                      dimensions: {
-                        ...activeModifiers.dimensions,
-                        [dimension.slug]: opt ? opt.value : "",
-                      },
-                    })
-                  }
-                />
-              </div>
-            );
-          })}
+          {(!isDimensionsValuesLoading || dimensionsFromStorage) &&
+            dimensions?.map((dimension) => {
+              const options = dimension.values.map(({ slug, title }) => ({
+                value: slug,
+                label: title || slug,
+              }));
+              return (
+                <div className="my-2 w-full" key={dimension.uid}>
+                  <DimensionCombobox
+                    key={dimension.uid}
+                    label={dimension.title || dimension.slug}
+                    options={options}
+                    selectedValue={activeModifiers.dimensions[dimension.slug]}
+                    onChange={(opt) =>
+                      setActiveModifiers({
+                        ...activeModifiers,
+                        dimensions: {
+                          ...activeModifiers.dimensions,
+                          [dimension.slug]: opt ? opt.value : "",
+                        },
+                      })
+                    }
+                  />
+                </div>
+              );
+            })}
           {dimensionsFromServer && dimensionsFromServer.length === 0 && (
             <p className="text-gray-500">No Audience Dimensions configured.</p>
           )}
         </div>
-        {dimensions && dimensions.length > 0 && (
-          <p className="my-2 text-gray-500">
-            Any unset Audience Dimensions will fall back to the value specified
-            in the actual query.
-          </p>
-        )}
+        {(!isDimensionsValuesLoading || dimensionsFromStorage) &&
+          dimensions &&
+          dimensions.length > 0 && (
+            <p className="my-2 text-gray-500">
+              Any unset Audience Dimensions will fall back to the value
+              specified in query arguments.
+            </p>
+          )}
       </div>
     </div>
   );

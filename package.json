@@ -2,7 +2,7 @@
   "name": "skylark-preview",
   "description": "Preview end-user experience and ensure seamless content availability on your Skylark-powered streaming platform.",
   "private": true,
-  "version": "0.0.2",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

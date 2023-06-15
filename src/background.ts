@@ -99,12 +99,11 @@ const updateActiveRulesIfEnabled = async (
     return [];
   }
 
-  const activeRules = await getActiveRules();
-
   const { uri, apiKey } = await getCredentialsFromStorage();
 
   const rules = convertModifiersToRules({ ...modifiers, uri, apiKey }) || [];
 
+  const activeRules = await getActiveRules();
   const rulesAreSame = compareArrays(rules, activeRules);
   if (rulesAreSame) {
     console.log(
@@ -114,14 +113,23 @@ const updateActiveRulesIfEnabled = async (
     return [];
   }
 
-  console.log("[updateActiveRulesIfEnabled] new rules:", rules);
+  console.log("[updateActiveRulesIfEnabled] rules:", {
+    newRules: rules,
+    oldRules: activeRules,
+  });
 
   const updateRuleOptions: chrome.declarativeNetRequest.UpdateRuleOptions = {
     removeRuleIds: activeRules.map((rule) => rule.id), // remove existing rules
     addRules: rules,
   };
 
-  await chrome.declarativeNetRequest.updateDynamicRules(updateRuleOptions);
+  try {
+    await chrome.declarativeNetRequest.updateDynamicRules(updateRuleOptions);
+  } catch (err) {
+    console.error("[updateActiveRulesIfEnabled] error updating rules", {
+      updateRuleOptions,
+    });
+  }
 
   await setModifiersToStorage(modifiers);
 
