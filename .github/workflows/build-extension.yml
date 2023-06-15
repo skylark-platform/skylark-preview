@@ -1,10 +1,11 @@
-name: Zip Files
+name: Build extension
 
 on:
   push:
 
 jobs:
-  zip-files:
+  build-and-zip:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -12,10 +13,10 @@ jobs:
       - run: yarn
       - name: Build Production
         if: ${{ github.ref_name == 'main' }}
-        run: yarn build --production
+        run: yarn build --mode production
       - name: Build Staging
         if: ${{ github.ref_name != 'main' }}
-        run: yarn build --staging
+        run: yarn build --mode staging
       - run: zip -r foresight-extension.zip ./dist/
       - uses: actions/upload-artifact@v3
         with:
