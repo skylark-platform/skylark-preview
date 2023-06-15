@@ -33,7 +33,7 @@ export default defineManifest(({ mode }) => {
     },
     action: {
       default_popup: "index.html",
-      default_title: `${appName}: Modify Availability Rules`,
+      default_title: name,
     },
     background: {
       service_worker: "src/background.ts",
