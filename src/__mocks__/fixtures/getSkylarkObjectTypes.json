@@ -1,0 +1,25 @@
+{
+  "data": {
+    "__type": {
+      "possibleTypes": [
+        { "name": "SkylarkImage" },
+        { "name": "Brand" },
+        { "name": "SkylarkAsset" },
+        { "name": "Episode" },
+        { "name": "Credit" },
+        { "name": "Movie" },
+        { "name": "Genre" },
+        { "name": "Person" },
+        { "name": "SkylarkTag" },
+        { "name": "Season" },
+        { "name": "Rating" },
+        { "name": "ParentalGuidance" },
+        { "name": "SkylarkSet" },
+        { "name": "Theme" },
+        { "name": "SkylarkChannel" },
+        { "name": "SkylarkEPGProgramme" },
+        { "name": "Role" }
+      ]
+    }
+  }
+}

@@ -60,8 +60,10 @@ const defaultDimensions: ParsedSkylarkDimensionsWithValues[] = [
   },
 ];
 
-const storageGetHandler = () => {
-  return {
+export const storageGetHandler = (
+  customValues?: Partial<Record<ExtensionStorageKeys, unknown>>
+) => {
+  return () => ({
     [ExtensionStorageKeys.Dimensions]: defaultDimensions,
     [ExtensionStorageKeys.ExtensionEnabled]: true,
     [ExtensionStorageKeys.Modifiers]: {
@@ -70,30 +72,41 @@ const storageGetHandler = () => {
     } satisfies ExtensionMessageValueHeaders,
     [ExtensionStorageKeys.SkylarkUri]: "https://skylark.com/graphql",
     [ExtensionStorageKeys.SkylarkApiKey]: "api-key",
-  };
+    ...customValues,
+  });
 };
-
+const storageHandler = storageGetHandler();
 const chrome = {
   storage: {
     local: {
-      get: vi.fn(storageGetHandler),
-      set: vi.fn(storageGetHandler),
+      get: vi.fn(storageHandler),
+      set: vi.fn(storageHandler),
     },
     sync: {
-      get: vi.fn(storageGetHandler),
-      set: vi.fn(storageGetHandler),
+      get: vi.fn(storageHandler),
+      set: vi.fn(storageHandler),
     },
     session: {
-      get: vi.fn(storageGetHandler),
-      set: vi.fn(storageGetHandler),
+      get: vi.fn(storageHandler),
+      set: vi.fn(storageHandler),
     },
   },
   runtime: {
     sendMessage: vi.fn(),
   },
+  declarativeNetRequest: {
+    ResourceType: ["XMLHttpRequest"],
+    HeaderOperation: {
+      SET: "SET",
+    },
+    RuleActionType: {
+      ModifyHeaders: "ModifyHeaders",
+    },
+  },
 };
-
 vi.stubGlobal("chrome", chrome);
+
+vi.stubGlobal("console", { log: vi.fn(), error: vi.fn() });
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
