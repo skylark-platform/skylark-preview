@@ -39,7 +39,7 @@ export default defineManifest(({ mode }) => {
       service_worker: "src/background.ts",
       type: "module",
     },
-    host_permissions: ["<all_urls>"],
+    host_permissions: ["*://*.skylarkplatform.com/graphql*"],
     permissions: ["background", "tabs", "storage", "declarativeNetRequest"],
   };
 });
