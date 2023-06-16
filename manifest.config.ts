@@ -40,6 +40,6 @@ export default defineManifest(({ mode }) => {
       type: "module",
     },
     host_permissions: ["*://*.skylarkplatform.com/graphql*"],
-    permissions: ["background", "tabs", "storage", "declarativeNetRequest"],
+    permissions: ["background", "storage", "declarativeNetRequest"],
   };
 });
