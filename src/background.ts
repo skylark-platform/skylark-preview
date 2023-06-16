@@ -65,15 +65,7 @@ const updateActiveRulesIfEnabled = async (
   return rules;
 };
 
-const reloadCurrentTab = async () => {
-  const [activeTab] = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  if (activeTab?.id) {
-    await chrome.tabs.reload(activeTab.id);
-  }
-};
+const reloadCurrentTab = chrome.tabs.reload;
 
 const enableExtension = async () => {
   await setExtensionEnabledToStorage(true);
