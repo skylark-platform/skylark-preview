@@ -79,7 +79,9 @@ export const App = () => {
   const fetchEnabledOnSkylarkUIFromStorage = async () => {
     const initialEnabledOnSkylarkUI =
       await getExtensionEnabledOnSkylarkUIFromStorage();
-    setEnabledOnSkylarkUI(initialEnabledOnSkylarkUI);
+    setEnabledOnSkylarkUI(
+      initialEnabledOnSkylarkUI === undefined ? true : initialEnabledOnSkylarkUI
+    );
   };
 
   useEffect(() => {
