@@ -95,3 +95,24 @@ export const setParsedDimensionsToStorage = async (
     [ExtensionStorageKeys.Dimensions]: dimensions,
   });
 };
+
+export const getExtensionEnabledOnSkylarkUIFromStorage =
+  async (): Promise<boolean> => {
+    const res = (await chrome.storage.local.get(
+      ExtensionStorageKeys.EnabledOnSkylarkUI
+    )) as { [ExtensionStorageKeys.EnabledOnSkylarkUI]: boolean };
+
+    return res[ExtensionStorageKeys.EnabledOnSkylarkUI];
+  };
+
+export const setExtensionEnabledOnSkylarkUIToStorage = async (
+  enabledOnSkylarkUI: boolean
+) => {
+  console.log(
+    "[setExtensionEnabledOnSkylarkUIToStorage] enabledOnSkylarkUI saved to storage:",
+    enabledOnSkylarkUI
+  );
+  await chrome.storage.local.set({
+    [ExtensionStorageKeys.EnabledOnSkylarkUI]: enabledOnSkylarkUI,
+  });
+};

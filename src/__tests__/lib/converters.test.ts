@@ -20,6 +20,7 @@ describe("convertModifiersToRules", () => {
       ...modifiers,
       ...credentials,
       apiKey: "",
+      enableInterceptsOnSkylarkUI: true,
     });
 
     expect(got).toBe(undefined);
@@ -29,6 +30,7 @@ describe("convertModifiersToRules", () => {
     const got = convertModifiersToRules({
       ...modifiers,
       ...credentials,
+      enableInterceptsOnSkylarkUI: true,
     });
 
     expect(got).toEqual([
@@ -42,6 +44,7 @@ describe("convertModifiersToRules", () => {
             "x-bypass-cache": "1",
             "x-ignore-availability": "false",
             Authorization: credentials.apiKey,
+            "x-skylark-preview-enabled": "true",
           }).map(([header, value]) => ({
             header,
             operation: "SET",
@@ -51,6 +54,27 @@ describe("convertModifiersToRules", () => {
         condition: {
           resourceTypes: ["XMLHttpRequest"],
           urlFilter: credentials.uri,
+        },
+        id: 1,
+        priority: 1,
+      },
+    ]);
+  });
+
+  it("adds the Skylark UI domain into the excludedInitiatorDomains arr when enableInterceptsOnSkylarkUI is false", () => {
+    const got = convertModifiersToRules({
+      ...modifiers,
+      ...credentials,
+      enableInterceptsOnSkylarkUI: false,
+    });
+
+    expect(got).toEqual([
+      {
+        action: expect.any(Object),
+        condition: {
+          resourceTypes: ["XMLHttpRequest"],
+          urlFilter: credentials.uri,
+          excludedInitiatorDomains: ["app.skylarkplatform.com"],
         },
         id: 1,
         priority: 1,
