@@ -21,9 +21,11 @@ import { DisabledOverlay } from "./components/disabledOverlay";
 import {
   getCredentialsFromStorage,
   getExtensionEnabledFromStorage,
+  getExtensionEnabledOnSkylarkUIFromStorage,
   getModifiersFromStorage,
   getParsedDimensionsFromStorage,
 } from "./lib/storage";
+import { Settings } from "./components/settings";
 
 export const App = () => {
   const queryClient = new QueryClient();
@@ -38,6 +40,8 @@ export const App = () => {
     });
     setExtensionEnabled(isNowEnabled);
   }, [extensionEnabled]);
+
+  const [enabledOnSkylarkUI, setEnabledOnSkylarkUI] = useState(true);
 
   const [showCredentialsScreen, setShowCredentialsScreen] = useState(false);
 
@@ -72,29 +76,44 @@ export const App = () => {
     if (initialDimensions) setDimensionsFromStorage(initialDimensions);
   };
 
+  const fetchEnabledOnSkylarkUIFromStorage = async () => {
+    const initialEnabledOnSkylarkUI =
+      await getExtensionEnabledOnSkylarkUIFromStorage();
+    setEnabledOnSkylarkUI(
+      initialEnabledOnSkylarkUI === undefined ? true : initialEnabledOnSkylarkUI
+    );
+  };
+
   useEffect(() => {
     void fetchCredentialsFromStorage();
     void fetchModifiersFromStorage();
     void fetchExtensionEnabledFromStorage();
     void fetchDimensionsFromStorage();
+    void fetchEnabledOnSkylarkUIFromStorage();
   }, []);
 
   const [isHeadersUpdating, setIsHeadersUpdating] = useState(false);
 
-  const updateHeaders = async (modifiers: ExtensionMessageValueHeaders) => {
+  const updateHeaders = async (
+    modifiers: ExtensionMessageValueHeaders,
+    enabledOnSkylarkUI: boolean
+  ) => {
     setIsHeadersUpdating(true);
     await sendExtensionMessage({
       type: ExtensionMessageType.UpdateHeaders,
-      value: modifiers,
+      value: {
+        availability: modifiers,
+        options: { enabledOnSkylarkUI },
+      },
     });
     setIsHeadersUpdating(false);
   };
 
   useEffect(() => {
     if (extensionEnabled) {
-      void updateHeaders(debouncedActiveModifiers);
+      void updateHeaders(debouncedActiveModifiers, enabledOnSkylarkUI);
     }
-  }, [debouncedActiveModifiers, extensionEnabled]);
+  }, [debouncedActiveModifiers, enabledOnSkylarkUI, extensionEnabled]);
 
   useEffect(() => {
     if (
@@ -109,20 +128,22 @@ export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="font-body flex h-screen flex-grow flex-col items-start justify-start bg-white">
-        <Header
-          credentialsAdded={!!creds?.apiKey && !!creds?.uri}
-          enabled={extensionEnabled}
-          toggleEnabled={() => {
-            void toggleEnabled();
-          }}
-          onChangeCredentials={() => {
-            if (showCredentialsScreen && !(creds?.apiKey && creds?.uri)) {
-              return;
-            }
-            setShowCredentialsScreen(!showCredentialsScreen);
-          }}
-        />
-        <main className="relative flex h-full w-full flex-grow">
+        <div className="fixed left-0 right-0 z-10 h-16">
+          <Header
+            credentialsAdded={!!creds?.apiKey && !!creds?.uri}
+            active={extensionEnabled}
+            toggleEnabled={() => {
+              void toggleEnabled();
+            }}
+            onChangeCredentials={() => {
+              if (showCredentialsScreen && !(creds?.apiKey && creds?.uri)) {
+                return;
+              }
+              setShowCredentialsScreen(!showCredentialsScreen);
+            }}
+          />
+        </div>
+        <main className="relative mt-16 flex h-full w-full flex-grow flex-col">
           {!creds ? (
             <div className="my-8 px-4">{`Loading...`}</div>
           ) : (
@@ -154,6 +175,12 @@ export const App = () => {
                     dimensionsFromStorage={dimensionsFromStorage}
                     setActiveModifiers={setActiveModifiers}
                     skylarkCreds={creds}
+                  />
+                  <Settings
+                    enabledOnSkylarkUI={enabledOnSkylarkUI}
+                    toggleEnabledOnSkylarkUI={() =>
+                      setEnabledOnSkylarkUI(!enabledOnSkylarkUI)
+                    }
                   />
                 </>
               )}

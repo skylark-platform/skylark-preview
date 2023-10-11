@@ -4,14 +4,14 @@ import { Switch } from "./switch";
 import { Button } from "./button";
 
 interface HeaderProps {
-  enabled: boolean;
+  active: boolean;
   credentialsAdded: boolean;
   toggleEnabled: () => void;
   onChangeCredentials: () => void;
 }
 
 export const Header = ({
-  enabled,
+  active,
   credentialsAdded,
   toggleEnabled,
   onChangeCredentials,
@@ -33,19 +33,20 @@ export const Header = ({
         <p
           className={clsx(
             "mr-2 text-error transition-all",
-            !enabled ? "visible opacity-100" : "invisible opacity-0"
+            !active ? "visible opacity-100" : "invisible opacity-0"
           )}
         >{`Intercepts paused`}</p>
       )}
       <Switch
         disabled={!credentialsAdded}
-        enabled={enabled}
+        active={active}
+        screenReaderDesc={`Toggle extension enabled`}
         toggleEnabled={toggleEnabled}
       />
       <Button
         className="ml-2"
         onClick={() => onChangeCredentials()}
-      >{`Change Credentials`}</Button>
+      >{`Change Account`}</Button>
     </div>
   </header>
 );

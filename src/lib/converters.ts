@@ -8,7 +8,9 @@ export const convertModifiersToRules = ({
   timeTravel,
   uri,
   apiKey,
-}: ExtensionMessageValueHeaders & SkylarkCredentials):
+  enableInterceptsOnSkylarkUI,
+}: ExtensionMessageValueHeaders &
+  SkylarkCredentials & { enableInterceptsOnSkylarkUI: boolean }):
   | chrome.declarativeNetRequest.Rule[]
   | undefined => {
   if (!apiKey) {
@@ -58,6 +60,13 @@ export const convertModifiersToRules = ({
     value: apiKey,
   });
 
+  // Send a marker header so its easy to identify when the Extension is intercepting
+  requestHeaders.push({
+    operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+    header: "x-skylark-preview-enabled",
+    value: "true",
+  });
+
   const rules: chrome.declarativeNetRequest.Rule[] = [
     {
       id: 1,
@@ -69,6 +78,9 @@ export const convertModifiersToRules = ({
       condition: {
         urlFilter: uri,
         resourceTypes: allResourceTypes,
+        excludedInitiatorDomains: enableInterceptsOnSkylarkUI
+          ? undefined
+          : ["app.skylarkplatform.com"],
       },
     },
   ];

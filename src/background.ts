@@ -7,7 +7,9 @@ import { convertModifiersToRules } from "./lib/converters";
 import {
   getCredentialsFromStorage,
   getExtensionEnabledFromStorage,
+  getExtensionEnabledOnSkylarkUIFromStorage,
   getModifiersFromStorage,
+  setExtensionEnabledOnSkylarkUIToStorage,
   setExtensionEnabledToStorage,
   setModifiersToStorage,
 } from "./lib/storage";
@@ -16,7 +18,10 @@ import { compareArrays } from "./lib/utils";
 const getActiveRules = () => chrome.declarativeNetRequest.getDynamicRules();
 
 const updateActiveRulesIfEnabled = async (
-  modifiers: ExtensionMessageValueHeaders
+  modifiers: ExtensionMessageValueHeaders,
+  opts: {
+    enabledOnSkylarkUI: boolean;
+  }
 ) => {
   const isEnabled = await getExtensionEnabledFromStorage();
   if (!isEnabled) {
@@ -28,7 +33,13 @@ const updateActiveRulesIfEnabled = async (
 
   const { uri, apiKey } = await getCredentialsFromStorage();
 
-  const rules = convertModifiersToRules({ ...modifiers, uri, apiKey }) || [];
+  const rules =
+    convertModifiersToRules({
+      ...modifiers,
+      uri,
+      apiKey,
+      enableInterceptsOnSkylarkUI: opts.enabledOnSkylarkUI,
+    }) || [];
 
   const activeRules = await getActiveRules();
   const rulesAreSame = compareArrays(rules, activeRules);
@@ -59,6 +70,7 @@ const updateActiveRulesIfEnabled = async (
   }
 
   await setModifiersToStorage(modifiers);
+  await setExtensionEnabledOnSkylarkUIToStorage(opts.enabledOnSkylarkUI);
 
   console.log("[updateActiveRulesIfEnabled] update successful");
 
@@ -70,10 +82,14 @@ const reloadCurrentTab = chrome.tabs.reload;
 const enableExtension = async () => {
   await setExtensionEnabledToStorage(true);
   const modifiers = await getModifiersFromStorage();
-  const rules = await updateActiveRulesIfEnabled(modifiers);
+  const enabledOnSkylarkUI =
+    (await getExtensionEnabledOnSkylarkUIFromStorage()) || true;
+  const rules = await updateActiveRulesIfEnabled(modifiers, {
+    enabledOnSkylarkUI,
+  });
 
   await chrome.action.setIcon({
-    path: "icons/logo-32x32.png",
+    path: "icons/logo-dot-32x32.png",
   });
 
   return rules;
@@ -105,7 +121,12 @@ const handleMessage = async (
 ) => {
   switch (message.type) {
     case ExtensionMessageType.UpdateHeaders:
-      return sendResponse(await updateActiveRulesIfEnabled(message.value));
+      return sendResponse(
+        await updateActiveRulesIfEnabled(
+          message.value.availability,
+          message.value.options
+        )
+      );
     case ExtensionMessageType.EnableExtension:
       return sendResponse(await enableExtension());
     case ExtensionMessageType.DisableExtension:

@@ -8,4 +8,5 @@ export enum ExtensionStorageKeys {
   Modifiers = "Modifiers",
   ExtensionEnabled = "ExtensionEnabled",
   Dimensions = "Dimensions",
+  EnabledOnSkylarkUI = "EnabledOnSkylarkUI",
 }

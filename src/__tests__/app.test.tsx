@@ -67,8 +67,13 @@ it("changes an active dimension and saves to storage", async () => {
     expect(chrome.runtime.sendMessage).toBeCalledWith({
       type: ExtensionMessageType.UpdateHeaders,
       value: {
-        dimensions: { "customer-types": "standard" },
-        timeTravel: "",
+        availability: {
+          dimensions: { "customer-types": "standard" },
+          timeTravel: "",
+        },
+        options: {
+          enabledOnSkylarkUI: true,
+        },
       },
     })
   );
@@ -89,8 +94,13 @@ it("changes the time travel and saves to storage", async () => {
     expect(chrome.runtime.sendMessage).toBeCalledWith({
       type: ExtensionMessageType.UpdateHeaders,
       value: {
-        dimensions: {},
-        timeTravel: "2017-06-01T08:30",
+        availability: {
+          dimensions: {},
+          timeTravel: "2017-06-01T08:30",
+        },
+        options: {
+          enabledOnSkylarkUI: true,
+        },
       },
     })
   );

@@ -32,8 +32,8 @@ export const AvailabilityModifier = ({
     useAvailabilityDimensionsWithValues(skylarkCreds.uri, skylarkCreds.apiKey);
 
   useEffect(() => {
-    if (!isDimensionsValuesLoading && dimensionsFromServer) {
-      void setParsedDimensionsToStorage(dimensionsFromServer);
+    if (!isDimensionsValuesLoading) {
+      void setParsedDimensionsToStorage(dimensionsFromServer || []);
     }
   }, [isDimensionsValuesLoading, dimensionsFromServer]);
 
@@ -96,10 +96,12 @@ export const AvailabilityModifier = ({
                 </div>
               );
             })}
-          {dimensionsFromServer && dimensionsFromServer.length === 0 && (
-            <p className="text-gray-500">No Audience Dimensions configured.</p>
-          )}
         </div>
+        {dimensionsFromServer && dimensionsFromServer.length === 0 && (
+          <p className="w-full text-gray-500">
+            No Audience Dimensions configured on the connected account.
+          </p>
+        )}
         {(!isDimensionsValuesLoading || dimensionsFromStorage) &&
           dimensions &&
           dimensions.length > 0 && (

@@ -15,7 +15,12 @@ export type ExtensionMessageValueHeaders = {
 export type ExtensionMessage =
   | {
       type: ExtensionMessageType.UpdateHeaders;
-      value: ExtensionMessageValueHeaders;
+      value: {
+        availability: ExtensionMessageValueHeaders;
+        options: {
+          enabledOnSkylarkUI: boolean;
+        };
+      };
     }
   | {
       type:
