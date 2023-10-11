@@ -61,7 +61,7 @@ const defaultDimensions: ParsedSkylarkDimensionsWithValues[] = [
 ];
 
 export const storageGetHandler = (
-  customValues?: Partial<Record<ExtensionStorageKeys, unknown>>
+  customValues?: Partial<Record<ExtensionStorageKeys, unknown>>,
 ) => {
   return () => ({
     [ExtensionStorageKeys.Dimensions]: defaultDimensions,

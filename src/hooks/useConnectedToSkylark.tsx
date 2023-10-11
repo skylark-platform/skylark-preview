@@ -24,7 +24,7 @@ export const useConnectedToSkylark = (credentials: SkylarkCredentials) => {
             {},
             {
               Authorization: apiKey,
-            }
+            },
           );
         }
       : undefined,

@@ -80,7 +80,7 @@ describe("convertModifiersToRules", () => {
     });
 
     expect(got?.[0].action.requestHeaders).not.toHaveProperty(
-      "x-ignore-availability"
+      "x-ignore-availability",
     );
   });
 

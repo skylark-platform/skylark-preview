@@ -33,7 +33,7 @@ export const Header = ({
         <p
           className={clsx(
             "mr-2 text-error transition-all",
-            !active ? "visible opacity-100" : "invisible opacity-0"
+            !active ? "visible opacity-100" : "invisible opacity-0",
           )}
         >{`Intercepts paused`}</p>
       )}

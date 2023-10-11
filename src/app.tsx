@@ -87,7 +87,7 @@ export const App = () => {
       settings || {
         enabledOnSkylarkUI: true,
         sendIgnoreAvailabilityHeader: true,
-      }
+      },
     );
   };
 
@@ -103,7 +103,7 @@ export const App = () => {
 
   const updateHeaders = async (
     modifiers: ExtensionMessageValueHeaders,
-    settings: ExtensionSettings
+    settings: ExtensionSettings,
   ) => {
     setIsHeadersUpdating(true);
     await sendExtensionMessage({

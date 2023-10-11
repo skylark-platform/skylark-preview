@@ -19,7 +19,7 @@ export const convertModifiersToRules = ({
   }
 
   const allResourceTypes = Object.values(
-    chrome.declarativeNetRequest.ResourceType
+    chrome.declarativeNetRequest.ResourceType,
   );
 
   const requestHeaders: chrome.declarativeNetRequest.ModifyHeaderInfo[] =

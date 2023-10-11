@@ -12,7 +12,7 @@ export const createGetAvailabilityDimensionValuesQueryAlias = (uid: string) =>
 
 export const createGetAvailabilityDimensionValues = (
   dimensions?: SkylarkGraphQLAvailabilityDimension[],
-  nextTokens?: Record<string, string>
+  nextTokens?: Record<string, string>,
 ) => {
   if (!dimensions) {
     return null;
@@ -25,10 +25,10 @@ export const createGetAvailabilityDimensionValues = (
         nextTokens[dimension.uid] && {
           dimension,
           nextToken: nextTokens[dimension.uid],
-        }
+        },
     )
     .filter(
-      (item): item is DimensionWithNextToken => !!(item && item.nextToken)
+      (item): item is DimensionWithNextToken => !!(item && item.nextToken),
     );
 
   const dimensionsToCreate =
@@ -41,7 +41,7 @@ export const createGetAvailabilityDimensionValues = (
       __name: "LIST_AVAILABILITY_DIMENSION_VALUES",
       ...dimensionsToCreate.reduce((acc, { dimension, nextToken }) => {
         const queryAlias = createGetAvailabilityDimensionValuesQueryAlias(
-          dimension.uid
+          dimension.uid,
         );
         return {
           ...acc,

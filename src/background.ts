@@ -20,12 +20,12 @@ const getActiveRules = () => chrome.declarativeNetRequest.getDynamicRules();
 
 const updateActiveRulesIfEnabled = async (
   modifiers: ExtensionMessageValueHeaders,
-  settings: ExtensionSettings
+  settings: ExtensionSettings,
 ) => {
   const isEnabled = await getExtensionEnabledFromStorage();
   if (!isEnabled) {
     console.log(
-      "[updateActiveRulesIfEnabled] update requested when not enabled"
+      "[updateActiveRulesIfEnabled] update requested when not enabled",
     );
     return [];
   }
@@ -45,7 +45,7 @@ const updateActiveRulesIfEnabled = async (
   if (rulesAreSame) {
     console.log(
       "[updateActiveRulesIfEnabled] update requested when no changes in rules exist",
-      { activeRules, newRules: rules }
+      { activeRules, newRules: rules },
     );
     return [];
   }
@@ -115,15 +115,15 @@ const disableExtension = async () => {
 
 const handleMessage = async (
   message: ExtensionMessage,
-  sendResponse: (message?: chrome.declarativeNetRequest.Rule[]) => void
+  sendResponse: (message?: chrome.declarativeNetRequest.Rule[]) => void,
 ) => {
   switch (message.type) {
     case ExtensionMessageType.UpdateHeaders:
       return sendResponse(
         await updateActiveRulesIfEnabled(
           message.value.availability,
-          message.value.settings
-        )
+          message.value.settings,
+        ),
       );
     case ExtensionMessageType.EnableExtension:
       return sendResponse(await enableExtension());
@@ -143,7 +143,7 @@ chrome.runtime.onMessage.addListener(
   (message: ExtensionMessage, _, sendResponse) => {
     void handleMessage(message, sendResponse);
     return true;
-  }
+  },
 );
 
 const startupChecks = async () => {

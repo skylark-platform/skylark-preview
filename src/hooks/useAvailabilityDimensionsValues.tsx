@@ -21,12 +21,12 @@ import {
 } from "../interfaces";
 
 const getNextPageParam = (
-  lastPage: GQLSkylarkListAvailabilityDimensionValuesResponse
+  lastPage: GQLSkylarkListAvailabilityDimensionValuesResponse,
 ): Record<string, string> | undefined => {
   const entries = Object.values(lastPage);
 
   const entriesWithNextToken = entries.filter(
-    (entry) => !!entry.values.next_token
+    (entry) => !!entry.values.next_token,
   );
 
   const nextTokens = entriesWithNextToken.reduce(
@@ -34,7 +34,7 @@ const getNextPageParam = (
       ...acc,
       [uid]: values.next_token,
     }),
-    {}
+    {},
   );
 
   return entriesWithNextToken.length > 0 ? nextTokens : undefined;
@@ -42,7 +42,7 @@ const getNextPageParam = (
 
 export const useAvailabilityDimensionsWithValues = (
   uri: string,
-  token: string
+  token: string,
 ) => {
   const {
     dimensions: dimensionsWithoutValues,
@@ -65,7 +65,7 @@ export const useAvailabilityDimensionsWithValues = (
     }: QueryFunctionContext<QueryKey, Record<string, string>>) => {
       const query = createGetAvailabilityDimensionValues(
         dimensionsWithoutValues,
-        nextTokens
+        nextTokens,
       );
       return skylarkRequest({
         uri,
@@ -94,7 +94,7 @@ export const useAvailabilityDimensionsWithValues = (
         (dimension): ParsedSkylarkDimensionsWithValues => {
           const dimensionValuePages = data.pages.map((page) => {
             const queryAlias = createGetAvailabilityDimensionValuesQueryAlias(
-              dimension.uid
+              dimension.uid,
             );
             return (
               page[queryAlias] &&
@@ -108,14 +108,14 @@ export const useAvailabilityDimensionsWithValues = (
             .flatMap((page) => (page ? page.values.objects : undefined))
             .filter(
               (item): item is SkylarkGraphQLAvailabilityDimensionWithValues =>
-                !!item
+                !!item,
             );
 
           return {
             ...dimension,
             values: flattenedValues,
           };
-        }
+        },
       );
     }
 
