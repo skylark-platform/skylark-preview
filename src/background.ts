@@ -2,15 +2,16 @@ import {
   ExtensionMessage,
   ExtensionMessageType,
   ExtensionMessageValueHeaders,
+  ExtensionSettings,
 } from "./interfaces";
 import { convertModifiersToRules } from "./lib/converters";
 import {
   getCredentialsFromStorage,
   getExtensionEnabledFromStorage,
-  getExtensionEnabledOnSkylarkUIFromStorage,
+  getExtensionSettingsFromStorage,
   getModifiersFromStorage,
-  setExtensionEnabledOnSkylarkUIToStorage,
   setExtensionEnabledToStorage,
+  setExtensionSettingsToStorage,
   setModifiersToStorage,
 } from "./lib/storage";
 import { compareArrays } from "./lib/utils";
@@ -19,9 +20,7 @@ const getActiveRules = () => chrome.declarativeNetRequest.getDynamicRules();
 
 const updateActiveRulesIfEnabled = async (
   modifiers: ExtensionMessageValueHeaders,
-  opts: {
-    enabledOnSkylarkUI: boolean;
-  }
+  settings: ExtensionSettings
 ) => {
   const isEnabled = await getExtensionEnabledFromStorage();
   if (!isEnabled) {
@@ -38,7 +37,7 @@ const updateActiveRulesIfEnabled = async (
       ...modifiers,
       uri,
       apiKey,
-      enableInterceptsOnSkylarkUI: opts.enabledOnSkylarkUI,
+      settings,
     }) || [];
 
   const activeRules = await getActiveRules();
@@ -70,7 +69,7 @@ const updateActiveRulesIfEnabled = async (
   }
 
   await setModifiersToStorage(modifiers);
-  await setExtensionEnabledOnSkylarkUIToStorage(opts.enabledOnSkylarkUI);
+  await setExtensionSettingsToStorage(settings);
 
   console.log("[updateActiveRulesIfEnabled] update successful");
 
@@ -82,11 +81,10 @@ const reloadCurrentTab = chrome.tabs.reload;
 const enableExtension = async () => {
   await setExtensionEnabledToStorage(true);
   const modifiers = await getModifiersFromStorage();
-  const enabledOnSkylarkUI =
-    (await getExtensionEnabledOnSkylarkUIFromStorage()) || true;
-  const rules = await updateActiveRulesIfEnabled(modifiers, {
-    enabledOnSkylarkUI,
-  });
+
+  const settings = await getExtensionSettingsFromStorage();
+
+  const rules = await updateActiveRulesIfEnabled(modifiers, settings);
 
   await chrome.action.setIcon({
     path: "icons/logo-dot-32x32.png",
@@ -124,7 +122,7 @@ const handleMessage = async (
       return sendResponse(
         await updateActiveRulesIfEnabled(
           message.value.availability,
-          message.value.options
+          message.value.settings
         )
       );
     case ExtensionMessageType.EnableExtension:

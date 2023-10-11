@@ -1,3 +1,8 @@
+export interface ExtensionSettings {
+  enabledOnSkylarkUI: boolean;
+  sendIgnoreAvailabilityHeader: boolean;
+}
+
 export enum ExtensionMessageType {
   UpdateHeaders = "UpdateHeaders",
   GetActiveHeaders = "GetActiveHeaders",
@@ -17,9 +22,7 @@ export type ExtensionMessage =
       type: ExtensionMessageType.UpdateHeaders;
       value: {
         availability: ExtensionMessageValueHeaders;
-        options: {
-          enabledOnSkylarkUI: boolean;
-        };
+        settings: ExtensionSettings;
       };
     }
   | {

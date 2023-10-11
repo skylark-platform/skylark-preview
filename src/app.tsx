@@ -12,6 +12,7 @@ import { AvailabilityModifier } from "./components/availabilityModifier";
 import {
   ExtensionMessageType,
   ExtensionMessageValueHeaders,
+  ExtensionSettings,
   ParsedSkylarkDimensionsWithValues,
   SkylarkCredentials,
 } from "./interfaces";
@@ -21,7 +22,7 @@ import { DisabledOverlay } from "./components/disabledOverlay";
 import {
   getCredentialsFromStorage,
   getExtensionEnabledFromStorage,
-  getExtensionEnabledOnSkylarkUIFromStorage,
+  getExtensionSettingsFromStorage,
   getModifiersFromStorage,
   getParsedDimensionsFromStorage,
 } from "./lib/storage";
@@ -41,7 +42,10 @@ export const App = () => {
     setExtensionEnabled(isNowEnabled);
   }, [extensionEnabled]);
 
-  const [enabledOnSkylarkUI, setEnabledOnSkylarkUI] = useState(true);
+  const [settings, setSettings] = useState<ExtensionSettings>({
+    sendIgnoreAvailabilityHeader: true,
+    enabledOnSkylarkUI: true,
+  });
 
   const [showCredentialsScreen, setShowCredentialsScreen] = useState(false);
 
@@ -76,11 +80,14 @@ export const App = () => {
     if (initialDimensions) setDimensionsFromStorage(initialDimensions);
   };
 
-  const fetchEnabledOnSkylarkUIFromStorage = async () => {
-    const initialEnabledOnSkylarkUI =
-      await getExtensionEnabledOnSkylarkUIFromStorage();
-    setEnabledOnSkylarkUI(
-      initialEnabledOnSkylarkUI === undefined ? true : initialEnabledOnSkylarkUI
+  const fetchSettingsFromStorage = async () => {
+    const settings = await getExtensionSettingsFromStorage();
+
+    setSettings(
+      settings || {
+        enabledOnSkylarkUI: true,
+        sendIgnoreAvailabilityHeader: true,
+      }
     );
   };
 
@@ -89,21 +96,21 @@ export const App = () => {
     void fetchModifiersFromStorage();
     void fetchExtensionEnabledFromStorage();
     void fetchDimensionsFromStorage();
-    void fetchEnabledOnSkylarkUIFromStorage();
+    void fetchSettingsFromStorage();
   }, []);
 
   const [isHeadersUpdating, setIsHeadersUpdating] = useState(false);
 
   const updateHeaders = async (
     modifiers: ExtensionMessageValueHeaders,
-    enabledOnSkylarkUI: boolean
+    settings: ExtensionSettings
   ) => {
     setIsHeadersUpdating(true);
     await sendExtensionMessage({
       type: ExtensionMessageType.UpdateHeaders,
       value: {
         availability: modifiers,
-        options: { enabledOnSkylarkUI },
+        settings,
       },
     });
     setIsHeadersUpdating(false);
@@ -111,9 +118,9 @@ export const App = () => {
 
   useEffect(() => {
     if (extensionEnabled) {
-      void updateHeaders(debouncedActiveModifiers, enabledOnSkylarkUI);
+      void updateHeaders(debouncedActiveModifiers, settings);
     }
-  }, [debouncedActiveModifiers, enabledOnSkylarkUI, extensionEnabled]);
+  }, [debouncedActiveModifiers, settings, extensionEnabled]);
 
   useEffect(() => {
     if (
@@ -171,17 +178,12 @@ export const App = () => {
                   <DisabledOverlay show={!extensionEnabled} />
                   <AvailabilityModifier
                     activeModifiers={activeModifiers}
-                    className="mb-10 px-4"
+                    className="mb-6 px-4"
                     dimensionsFromStorage={dimensionsFromStorage}
                     setActiveModifiers={setActiveModifiers}
                     skylarkCreds={creds}
                   />
-                  <Settings
-                    enabledOnSkylarkUI={enabledOnSkylarkUI}
-                    toggleEnabledOnSkylarkUI={() =>
-                      setEnabledOnSkylarkUI(!enabledOnSkylarkUI)
-                    }
-                  />
+                  <Settings settings={settings} updateSettings={setSettings} />
                 </>
               )}
             </>
