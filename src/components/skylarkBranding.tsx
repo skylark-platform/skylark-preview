@@ -25,13 +25,16 @@ export const SkylarkLogo: React.FC<SkylarkLogoProps> = ({ className }) => (
     />
     <path
       d="M60 72C66.3652 72 72.4697 69.4714 76.9706 64.9706C81.4714 60.4697 84 54.3652 84 48C84 41.6348 81.4714 35.5303 76.9706 31.0294C72.4697 26.5286 66.3652 24 60 24H36C42.3652 24 48.4697 26.5286 52.9706 31.0294C57.4714 35.5303 60 41.6348 60 48V72Z"
-      fill="url(#paint0_linear_1041_895)"
+      fill="url(#skylark_extension_paint0_linear_1041_895)"
     />
-    <path d="M60 48H36L60 72V48Z" fill="url(#paint1_linear_1041_895)" />
+    <path
+      d="M60 48H36L60 72V48Z"
+      fill="url(#skylark_extension_paint1_linear_1041_895)"
+    />
     <defs>
       <linearGradient
         gradientUnits="userSpaceOnUse"
-        id="paint0_linear_1041_895"
+        id="skylark_extension_paint0_linear_1041_895"
         x1="60"
         x2="60"
         y1="24"
@@ -42,7 +45,7 @@ export const SkylarkLogo: React.FC<SkylarkLogoProps> = ({ className }) => (
       </linearGradient>
       <linearGradient
         gradientUnits="userSpaceOnUse"
-        id="paint1_linear_1041_895"
+        id="skylark_extension_paint1_linear_1041_895"
         x1="60"
         x2="48"
         y1="48"
