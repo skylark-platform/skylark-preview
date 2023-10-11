@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Switch } from "./switch";
+import { SwitchWithLabel } from "./switch";
 import { ExtensionSettings } from "../interfaces";
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import { FiInfo } from "react-icons/fi";
@@ -43,22 +43,15 @@ const SettingToggle = ({
   link?: { text: string; href: string };
 }) => (
   <div className="flex items-center space-x-2 px-4">
-    <Switch
+    <SwitchWithLabel
       active={active}
       toggleEnabled={toggleEnabled}
       screenReaderDesc={screenReaderDesc}
       small
       grayscale
+      label={desc}
     />
     <div className="flex items-center space-x-1">
-      <p
-        className={clsx(
-          "transition-opacity",
-          active ? "opacity-100" : "opacity-60"
-        )}
-      >
-        {desc}
-      </p>
       {tooltip && (
         <div className="group relative py-2 hover:cursor-pointer">
           <FiInfo className="h-3.5 w-3.5 transition-colors group-hover:text-brand-primary" />
@@ -74,7 +67,7 @@ const SettingToggle = ({
           className={clsx(
             "text-brand-primary",
             "transition-opacity",
-            active ? "opacity-100" : "opacity-60"
+            active ? "opacity-100" : "opacity-60",
           )}
         >{`(${link.text})`}</a>
       )}
@@ -90,12 +83,13 @@ export const Settings = ({
     <div className="mb-2">
       <SettingToggle
         active={enabledOnSkylarkUI}
-        toggleEnabled={() =>
+        toggleEnabled={() => {
+          console.log("clicked");
           updateSettings((prev) => ({
             ...prev,
             enabledOnSkylarkUI: !enabledOnSkylarkUI,
-          }))
-        }
+          }));
+        }}
         desc={`Intercept requests on the Skylark App UI`}
         screenReaderDesc="Toggle the extension running on Skylark UI"
         tooltip={

@@ -49,8 +49,8 @@ describe("convertModifiersToRules", () => {
               modifiers.dimensions["customer-type"],
             "x-sl-dimension-device-type": modifiers.dimensions["device-type"],
             "x-time-travel": modifiers.timeTravel,
-            "x-bypass-cache": "1",
             "x-ignore-availability": "false",
+            "x-bypass-cache": "1",
             Authorization: credentials.apiKey,
             "x-skylark-preview-enabled": "true",
           }).map(([header, value]) => ({

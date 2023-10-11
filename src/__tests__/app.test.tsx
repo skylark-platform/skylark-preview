@@ -45,7 +45,7 @@ it("fetches the latest dimensions and values from Skylark and updates in storage
   await waitFor(() =>
     expect(chrome.storage.local.set).toBeCalledWith({
       [ExtensionStorageKeys.Dimensions]: expect.any(Array),
-    })
+    }),
   );
 });
 
@@ -71,11 +71,12 @@ it("changes an active dimension and saves to storage", async () => {
           dimensions: { "customer-types": "standard" },
           timeTravel: "",
         },
-        options: {
+        settings: {
           enabledOnSkylarkUI: true,
+          sendIgnoreAvailabilityHeader: true,
         },
       },
-    })
+    }),
   );
 });
 
@@ -98,12 +99,69 @@ it("changes the time travel and saves to storage", async () => {
           dimensions: {},
           timeTravel: "2017-06-01T08:30",
         },
-        options: {
+        settings: {
           enabledOnSkylarkUI: true,
+          sendIgnoreAvailabilityHeader: true,
         },
       },
-    })
+    }),
   );
+});
+
+describe.only("Settings", () => {
+  it("toggles the enabled on Skylark UI and saves to storage", async () => {
+    await act(async () => render(<App />));
+
+    const input = screen.getByText("Intercept requests on the Skylark App UI");
+
+    expect(input).toBeInTheDocument();
+
+    await fireEvent.click(input);
+
+    await waitFor(() =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: {
+          availability: {
+            dimensions: {},
+            timeTravel: "",
+          },
+          settings: {
+            enabledOnSkylarkUI: false,
+            sendIgnoreAvailabilityHeader: true,
+          },
+        },
+      }),
+    );
+  });
+
+  it("toggles sending the Ignore Availability header", async () => {
+    await act(async () => render(<App />));
+
+    const input = screen.getByText(
+      "Disable sending the Ignore Availability header (Advanced)",
+    );
+
+    expect(input).toBeInTheDocument();
+
+    await fireEvent.click(input);
+
+    await waitFor(() =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: {
+          availability: {
+            dimensions: {},
+            timeTravel: "",
+          },
+          settings: {
+            enabledOnSkylarkUI: true,
+            sendIgnoreAvailabilityHeader: false,
+          },
+        },
+      }),
+    );
+  });
 });
 
 describe("Unauthenticated", () => {
@@ -139,7 +197,7 @@ describe("Unauthenticated", () => {
     await act(async () => render(<App />));
 
     expect(
-      screen.getByText("Enter your Skylark credentials")
+      screen.getByText("Enter your Skylark credentials"),
     ).toBeInTheDocument();
 
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
@@ -170,13 +228,13 @@ describe("Unauthenticated", () => {
     await waitFor(() =>
       expect(chrome.storage.sync.set).toBeCalledWith({
         [ExtensionStorageKeys.SkylarkUri]: "https://api.skylarkplatform.com",
-      })
+      }),
     );
 
     await waitFor(() =>
       expect(chrome.storage.session.set).toBeCalledWith({
         [ExtensionStorageKeys.SkylarkApiKey]: "123456",
-      })
+      }),
     );
   });
 });
