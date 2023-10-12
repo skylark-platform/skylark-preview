@@ -15,6 +15,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      zIndex: {
+        "above-all": 9999999999,
+      },
       fontFamily: {
         heading: "Work Sans",
         sans: ["Inter", ...defaultTheme.fontFamily.sans],

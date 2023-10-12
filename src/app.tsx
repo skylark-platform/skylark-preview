@@ -27,6 +27,7 @@ import {
   getParsedDimensionsFromStorage,
 } from "./lib/storage";
 import { Settings } from "./components/settings";
+import { EXTENSION_SETTINGS_DEFAULTS } from "./constants";
 
 export const App = () => {
   const queryClient = new QueryClient();
@@ -42,10 +43,7 @@ export const App = () => {
     setExtensionEnabled(isNowEnabled);
   }, [extensionEnabled]);
 
-  const [settings, setSettings] = useState<ExtensionSettings>({
-    sendIgnoreAvailabilityHeader: true,
-    enabledOnSkylarkUI: true,
-  });
+  const [settings, setSettings] = useState<ExtensionSettings | null>(null);
 
   const [showCredentialsScreen, setShowCredentialsScreen] = useState(false);
 
@@ -56,7 +54,7 @@ export const App = () => {
   >();
 
   const [activeModifiers, setActiveModifiers] =
-    useState<ExtensionMessageValueHeaders>({ timeTravel: "", dimensions: {} });
+    useState<ExtensionMessageValueHeaders | null>(null);
 
   const [debouncedActiveModifiers] = useDebounce(activeModifiers, 1000);
 
@@ -83,12 +81,7 @@ export const App = () => {
   const fetchSettingsFromStorage = async () => {
     const settings = await getExtensionSettingsFromStorage();
 
-    setSettings(
-      settings || {
-        enabledOnSkylarkUI: true,
-        sendIgnoreAvailabilityHeader: true,
-      },
-    );
+    setSettings(settings || EXTENSION_SETTINGS_DEFAULTS);
   };
 
   useEffect(() => {
@@ -101,26 +94,30 @@ export const App = () => {
 
   const [isHeadersUpdating, setIsHeadersUpdating] = useState(false);
 
-  const updateHeaders = async (
+  const updateHeadersAndSettings = async (
     modifiers: ExtensionMessageValueHeaders,
     settings: ExtensionSettings,
   ) => {
     setIsHeadersUpdating(true);
+
+    await sendExtensionMessage({
+      type: ExtensionMessageType.UpdateSettings,
+      value: settings,
+    });
+
     await sendExtensionMessage({
       type: ExtensionMessageType.UpdateHeaders,
-      value: {
-        availability: modifiers,
-        settings,
-      },
+      value: modifiers,
     });
+
     setIsHeadersUpdating(false);
   };
 
   useEffect(() => {
-    if (extensionEnabled) {
-      void updateHeaders(debouncedActiveModifiers, settings);
+    if (extensionEnabled && settings && debouncedActiveModifiers) {
+      void updateHeadersAndSettings(debouncedActiveModifiers, settings);
     }
-  }, [debouncedActiveModifiers, settings, extensionEnabled]);
+  }, [debouncedActiveModifiers, extensionEnabled, settings]);
 
   useEffect(() => {
     if (
@@ -129,6 +126,10 @@ export const App = () => {
       !showCredentialsScreen
     ) {
       setShowCredentialsScreen(true);
+      // If the credentials are missing, disable
+      void sendExtensionMessage({
+        type: ExtensionMessageType.DisableExtension,
+      });
     }
   }, [creds, showCredentialsScreen]);
 
@@ -151,7 +152,7 @@ export const App = () => {
           />
         </div>
         <main className="relative mt-16 flex h-full w-full flex-grow flex-col">
-          {!creds ? (
+          {!creds || !activeModifiers || !settings ? (
             <div className="my-8 px-4">{`Loading...`}</div>
           ) : (
             <>

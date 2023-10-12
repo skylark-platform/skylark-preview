@@ -20,6 +20,7 @@ const credentials = {
 const settings: ExtensionSettings = {
   enabledOnSkylarkUI: true,
   sendIgnoreAvailabilityHeader: true,
+  showStatusOverlay: false,
 };
 
 describe("convertModifiersToRules", () => {

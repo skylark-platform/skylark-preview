@@ -120,16 +120,21 @@ describe.only("Settings", () => {
 
     await waitFor(() =>
       expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateSettings,
+        value: {
+          enabledOnSkylarkUI: false,
+          sendIgnoreAvailabilityHeader: true,
+          showStatusOverlay: false,
+        },
+      }),
+    );
+
+    await waitFor(() =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
         type: ExtensionMessageType.UpdateHeaders,
         value: {
-          availability: {
-            dimensions: {},
-            timeTravel: "",
-          },
-          settings: {
-            enabledOnSkylarkUI: false,
-            sendIgnoreAvailabilityHeader: true,
-          },
+          dimensions: {},
+          timeTravel: "",
         },
       }),
     );
@@ -148,16 +153,52 @@ describe.only("Settings", () => {
 
     await waitFor(() =>
       expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateSettings,
+        value: {
+          enabledOnSkylarkUI: true,
+          sendIgnoreAvailabilityHeader: false,
+          showStatusOverlay: false,
+        },
+      }),
+    );
+
+    await waitFor(() =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
         type: ExtensionMessageType.UpdateHeaders,
         value: {
-          availability: {
-            dimensions: {},
-            timeTravel: "",
-          },
-          settings: {
-            enabledOnSkylarkUI: true,
-            sendIgnoreAvailabilityHeader: false,
-          },
+          dimensions: {},
+          timeTravel: "",
+        },
+      }),
+    );
+  });
+
+  it("toggles showing the status overlay", async () => {
+    await act(async () => render(<App />));
+
+    const input = screen.getByText("Show extension enabled overlay");
+
+    expect(input).toBeInTheDocument();
+
+    await fireEvent.click(input);
+
+    await waitFor(() =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateSettings,
+        value: {
+          enabledOnSkylarkUI: true,
+          sendIgnoreAvailabilityHeader: true,
+          showStatusOverlay: true,
+        },
+      }),
+    );
+
+    await waitFor(() =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: {
+          dimensions: {},
+          timeTravel: "",
         },
       }),
     );

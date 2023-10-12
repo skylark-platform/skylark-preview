@@ -3,10 +3,11 @@ import { SwitchWithLabel } from "./switch";
 import { ExtensionSettings } from "../interfaces";
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import { FiInfo } from "react-icons/fi";
+import { EXTENSION_SETTINGS_DEFAULTS } from "../constants";
 
 interface SettingsProps {
   settings: ExtensionSettings;
-  updateSettings: Dispatch<SetStateAction<ExtensionSettings>>;
+  updateSettings: Dispatch<SetStateAction<ExtensionSettings | null>>;
 }
 
 const Link = ({
@@ -76,7 +77,11 @@ const SettingToggle = ({
 );
 
 export const Settings = ({
-  settings: { enabledOnSkylarkUI, sendIgnoreAvailabilityHeader },
+  settings: {
+    enabledOnSkylarkUI,
+    sendIgnoreAvailabilityHeader,
+    showStatusOverlay,
+  },
   updateSettings,
 }: SettingsProps) => {
   return (
@@ -84,9 +89,8 @@ export const Settings = ({
       <SettingToggle
         active={enabledOnSkylarkUI}
         toggleEnabled={() => {
-          console.log("clicked");
           updateSettings((prev) => ({
-            ...prev,
+            ...(prev || EXTENSION_SETTINGS_DEFAULTS),
             enabledOnSkylarkUI: !enabledOnSkylarkUI,
           }));
         }}
@@ -117,7 +121,7 @@ export const Settings = ({
         active={!sendIgnoreAvailabilityHeader}
         toggleEnabled={() =>
           updateSettings((prev) => ({
-            ...prev,
+            ...(prev || EXTENSION_SETTINGS_DEFAULTS),
             sendIgnoreAvailabilityHeader: !sendIgnoreAvailabilityHeader,
           }))
         }
@@ -142,6 +146,29 @@ export const Settings = ({
               href="https://docs.skylarkplatform.com/docs/ignoring-availability"
               text="Documentation"
             />
+          </>
+        }
+      />
+      <SettingToggle
+        active={showStatusOverlay}
+        toggleEnabled={() =>
+          updateSettings((prev) => ({
+            ...(prev || EXTENSION_SETTINGS_DEFAULTS),
+            showStatusOverlay: !showStatusOverlay,
+          }))
+        }
+        desc={`Show extension enabled overlay`}
+        screenReaderDesc="Toggles whether or not to show the Skylark logo on the page when the extension is enabled"
+        tooltip={
+          <>
+            <p className="font-bold">
+              Show the Skylark logo on the page when Preview is enabled.
+            </p>
+            <p>
+              When enabled, Skylark Preview will add an overlay onto the page so
+              that it is easy to identify it is active and requests are being
+              intercepted.
+            </p>
           </>
         }
       />
