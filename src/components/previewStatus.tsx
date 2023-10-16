@@ -24,9 +24,10 @@ export const PreviewStatus = () => {
     <>
       {isEnabled && settings?.showStatusOverlay && (
         <div className="group">
-          <div className="fixed bottom-10 left-1/2 z-above-all flex -translate-x-1/2 items-center justify-center rounded-full bg-manatee-200 px-4 py-2 font-heading text-sm text-black shadow shadow-brand-primary md:px-6 md:py-4">
+          <div className="fixed left-0 right-0 top-0 z-above-all h-[10px] w-full bg-error"></div>
+          <div className="fixed bottom-10 left-1/2 z-above-all flex -translate-x-1/2 items-center justify-center rounded-full bg-manatee-200 p-3 font-heading text-sm text-black shadow shadow-brand-primary group-hover:px-5 md:p-4 md:group-hover:px-8">
             <SkylarkLogo className="h-6 w-6 md:h-8 md:w-8" />
-            <div className="flex h-8 w-0 items-center overflow-hidden transition-all group-hover:w-[165px] md:group-hover:w-[190px]">
+            <div className="flex h-6 w-0 items-center overflow-hidden transition-all group-hover:w-[165px] md:h-8 md:group-hover:w-[190px]">
               <p className="ml-2 w-full whitespace-pre text-left font-sans text-xs font-semibold md:text-sm">
                 Skylark Preview is enabled
               </p>
@@ -58,7 +59,7 @@ export const PreviewStatusLine = () => {
   return (
     <>
       {isEnabled && settings?.showStatusOverlay && (
-        <div className="fixed left-0 right-0 top-0 z-above-all h-[2px] w-full bg-error"></div>
+        <div className="fixed left-0 right-0 top-0 z-above-all h-[10px] w-full bg-error"></div>
       )}
     </>
   );

@@ -94,58 +94,27 @@ export const Settings = ({
             enabledOnSkylarkUI: !enabledOnSkylarkUI,
           }));
         }}
-        desc={`Intercept requests on the Skylark App UI`}
+        desc={`Intercept requests on the Skylark app UI`}
         screenReaderDesc="Toggle the extension running on Skylark UI"
         tooltip={
           <>
             <p className="font-bold">
-              Disables Preview intercepting requests when using the Skylark UI.
+              Disables Skylark Preview intercepting requests when using the
+              Skylark UI.
             </p>
             <p>
-              By default, Preview runs on any website and intercepts any
+              By default, Skylark Preview runs on any website and intercepts any
               requests matching your Skylark Account URL.
             </p>
             <p>
               This enables you to filter your whole content library using
-              Preview's Time Travel and Audience Dimensions.
+              Skylark Preview's Time Travel and Audience Dimensions.
             </p>
             <p>
               However, when making modifications to your content you may want to
               disable this.
             </p>
             <Link href="https://app.skylarkplatform.com" text="Open Skylark" />
-          </>
-        }
-      />
-      <SettingToggle
-        active={!sendIgnoreAvailabilityHeader}
-        toggleEnabled={() =>
-          updateSettings((prev) => ({
-            ...(prev || EXTENSION_SETTINGS_DEFAULTS),
-            sendIgnoreAvailabilityHeader: !sendIgnoreAvailabilityHeader,
-          }))
-        }
-        desc={`Disable sending the Ignore Availability header (Advanced)`}
-        screenReaderDesc="Toggle the extension sending the x-ignore-availability header as false"
-        tooltip={
-          <>
-            <p className="font-bold">
-              Disables sending `x-ignore-availability: false` on every request
-              intercepted by Preview.
-            </p>
-            <p>
-              By default, Preview will disable ignoring availability for all of
-              your queries. It does this to ensure the Time Travel and Audience
-              Dimensions you have selected reflect on your app.
-            </p>
-            <p>
-              However, if your app has queries that utilise ignore availability,
-              you may want to disable sending this header.
-            </p>
-            <Link
-              href="https://docs.skylarkplatform.com/docs/ignoring-availability"
-              text="Documentation"
-            />
           </>
         }
       />
@@ -162,13 +131,46 @@ export const Settings = ({
         tooltip={
           <>
             <p className="font-bold">
-              Show the Skylark logo on the page when Preview is enabled.
+              Show the Skylark logo on the page when Skylark Preview is enabled.
             </p>
             <p>
-              When enabled, Skylark Preview will add an overlay onto the page so
-              that it is easy to identify it is active and requests are being
+              When enabled, Skylark Preview will add an overlay onto the page to
+              make it easy to identify that it is active and requests are being
               intercepted.
             </p>
+          </>
+        }
+      />
+      <SettingToggle
+        active={sendIgnoreAvailabilityHeader}
+        toggleEnabled={() =>
+          updateSettings((prev) => ({
+            ...(prev || EXTENSION_SETTINGS_DEFAULTS),
+            sendIgnoreAvailabilityHeader: !sendIgnoreAvailabilityHeader,
+          }))
+        }
+        desc={`Include the Ignore Availability header (Advanced)`}
+        screenReaderDesc="Toggle the extension sending the x-ignore-availability header as false"
+        tooltip={
+          <>
+            <p className="font-bold">
+              Enables sending `x-ignore-availability: false` on every request
+              intercepted by Skylark Preview.
+            </p>
+            <p>
+              When enabled, Skylark Preview will force availability to be
+              ignored for all of your queries. It does this to ensure the Time
+              Travel and Audience Dimensions you have selected reflect on your
+              app.
+            </p>
+            <p>
+              However, if your app has queries that utilise ignore availability,
+              you may want to disable sending this header.
+            </p>
+            <Link
+              href="https://docs.skylarkplatform.com/docs/ignoring-availability"
+              text="Documentation"
+            />
           </>
         }
       />

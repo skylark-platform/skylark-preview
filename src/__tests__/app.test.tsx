@@ -65,18 +65,21 @@ it("changes an active dimension and saves to storage", async () => {
 
   await waitFor(() =>
     expect(chrome.runtime.sendMessage).toBeCalledWith({
-      type: ExtensionMessageType.UpdateHeaders,
-      value: {
-        availability: {
+      type: ExtensionMessageType.UpdateSettings,
+      value: expect.any(Object),
+    }),
+  );
+
+  await waitFor(
+    () =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: {
           dimensions: { "customer-types": "standard" },
           timeTravel: "",
         },
-        settings: {
-          enabledOnSkylarkUI: true,
-          sendIgnoreAvailabilityHeader: true,
-        },
-      },
-    }),
+      }),
+    { timeout: 5000 },
   );
 });
 
@@ -93,26 +96,29 @@ it("changes the time travel and saves to storage", async () => {
 
   await waitFor(() =>
     expect(chrome.runtime.sendMessage).toBeCalledWith({
-      type: ExtensionMessageType.UpdateHeaders,
-      value: {
-        availability: {
+      type: ExtensionMessageType.UpdateSettings,
+      value: expect.any(Object),
+    }),
+  );
+
+  await waitFor(
+    () =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: {
           dimensions: {},
           timeTravel: "2017-06-01T08:30",
         },
-        settings: {
-          enabledOnSkylarkUI: true,
-          sendIgnoreAvailabilityHeader: true,
-        },
-      },
-    }),
+      }),
+    { timeout: 5000 },
   );
 });
 
-describe.only("Settings", () => {
+describe("Settings", () => {
   it("toggles the enabled on Skylark UI and saves to storage", async () => {
     await act(async () => render(<App />));
 
-    const input = screen.getByText("Intercept requests on the Skylark App UI");
+    const input = screen.getByText("Intercept requests on the Skylark app UI");
 
     expect(input).toBeInTheDocument();
 
@@ -124,7 +130,7 @@ describe.only("Settings", () => {
         value: {
           enabledOnSkylarkUI: false,
           sendIgnoreAvailabilityHeader: true,
-          showStatusOverlay: false,
+          showStatusOverlay: true,
         },
       }),
     );
@@ -144,7 +150,7 @@ describe.only("Settings", () => {
     await act(async () => render(<App />));
 
     const input = screen.getByText(
-      "Disable sending the Ignore Availability header (Advanced)",
+      "Include the Ignore Availability header (Advanced)",
     );
 
     expect(input).toBeInTheDocument();
@@ -157,7 +163,7 @@ describe.only("Settings", () => {
         value: {
           enabledOnSkylarkUI: true,
           sendIgnoreAvailabilityHeader: false,
-          showStatusOverlay: false,
+          showStatusOverlay: true,
         },
       }),
     );
@@ -188,7 +194,7 @@ describe.only("Settings", () => {
         value: {
           enabledOnSkylarkUI: true,
           sendIgnoreAvailabilityHeader: true,
-          showStatusOverlay: true,
+          showStatusOverlay: false,
         },
       }),
     );
@@ -256,6 +262,10 @@ describe("Unauthenticated", () => {
 
     await fireEvent.change(apiKeyInput, {
       target: { value: "123456" },
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText("Verifying...")).not.toBeInTheDocument();
     });
 
     const connectButton = screen.getByText("Connect");

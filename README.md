@@ -55,15 +55,15 @@
 
 ![Preview Screen Shot][preview-screenshot]
 
-Introducing Preview, the cutting-edge Google Chrome extension designed for Skylark-powered streaming platforms.
+Introducing Skylark Preview, the cutting-edge Google Chrome extension designed for Skylark-powered streaming platforms.
 
 Enhance your content strategy by seamlessly modifying Availability Rules directly on the page.
 
-With Preview, you gain the ability to preview your users’ experience from anywhere in the world, at any time. Stay one step ahead by planning ahead and ensuring seamless content availability. Unleash the true potential of your streaming platform with Preview, an indispensable tool for content creators and strategists.
+With Skylark Preview, you gain the ability to preview your users’ experience from anywhere in the world, at any time. Stay one step ahead by planning ahead and ensuring seamless content availability. Unleash the true potential of your streaming platform with Skylark Preview, an indispensable tool for content creators and strategists.
 
 ### How it works
 
-Once installed and configured with your Skylark credentials, Preview intercepts requests to your Skylark and modifies its headers.
+Once installed and configured with your Skylark credentials, Skylark Preview intercepts requests to your Skylark and modifies its headers.
 
 You are able to:
 

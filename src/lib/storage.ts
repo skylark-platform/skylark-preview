@@ -56,9 +56,11 @@ export const setModifiersToStorage = async (
 export const getExtensionEnabledFromStorage = async (): Promise<boolean> => {
   const res = (await chrome.storage.local.get(
     ExtensionStorageKeys.ExtensionEnabled,
-  )) as { [ExtensionStorageKeys.ExtensionEnabled]: boolean };
+  )) as { [ExtensionStorageKeys.ExtensionEnabled]: boolean | undefined };
 
-  return res[ExtensionStorageKeys.ExtensionEnabled];
+  const enabled = res[ExtensionStorageKeys.ExtensionEnabled];
+
+  return enabled === undefined ? true : enabled;
 };
 
 export const setExtensionEnabledToStorage = async (enabled: boolean) => {
@@ -102,14 +104,14 @@ export const getExtensionSettingsFromStorage =
     const res = (await chrome.storage.local.get(
       ExtensionStorageKeys.Settings,
     )) as { [ExtensionStorageKeys.Settings]: ExtensionSettings | undefined };
+    const settings = res[ExtensionStorageKeys.Settings];
 
-    return (
-      res[ExtensionStorageKeys.Settings] || {
-        enabledOnSkylarkUI: true,
-        sendIgnoreAvailabilityHeader: true,
-        showStatusOverlay: false,
-      }
-    );
+    return {
+      enabledOnSkylarkUI: true,
+      sendIgnoreAvailabilityHeader: true,
+      showStatusOverlay: true,
+      ...settings,
+    };
   };
 
 export const setExtensionSettingsToStorage = async (
