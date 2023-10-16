@@ -1,4 +1,7 @@
-import { ExtensionMessageValueHeaders } from "../../interfaces";
+import {
+  ExtensionMessageValueHeaders,
+  ExtensionSettings,
+} from "../../interfaces";
 import { convertModifiersToRules } from "../../lib/converters";
 
 const modifiers: ExtensionMessageValueHeaders = {
@@ -14,13 +17,19 @@ const credentials = {
   apiKey: "12345",
 };
 
+const settings: ExtensionSettings = {
+  enabledOnSkylarkUI: true,
+  sendIgnoreAvailabilityHeader: true,
+  showStatusOverlay: false,
+};
+
 describe("convertModifiersToRules", () => {
   it("if apiKey isn't supplied, returns undefined", () => {
     const got = convertModifiersToRules({
       ...modifiers,
       ...credentials,
       apiKey: "",
-      enableInterceptsOnSkylarkUI: true,
+      settings,
     });
 
     expect(got).toBe(undefined);
@@ -30,7 +39,7 @@ describe("convertModifiersToRules", () => {
     const got = convertModifiersToRules({
       ...modifiers,
       ...credentials,
-      enableInterceptsOnSkylarkUI: true,
+      settings,
     });
 
     expect(got).toEqual([
@@ -41,8 +50,8 @@ describe("convertModifiersToRules", () => {
               modifiers.dimensions["customer-type"],
             "x-sl-dimension-device-type": modifiers.dimensions["device-type"],
             "x-time-travel": modifiers.timeTravel,
-            "x-bypass-cache": "1",
             "x-ignore-availability": "false",
+            "x-bypass-cache": "1",
             Authorization: credentials.apiKey,
             "x-skylark-preview-enabled": "true",
           }).map(([header, value]) => ({
@@ -61,11 +70,29 @@ describe("convertModifiersToRules", () => {
     ]);
   });
 
-  it("adds the Skylark UI domain into the excludedInitiatorDomains arr when enableInterceptsOnSkylarkUI is false", () => {
+  it("does not add the ignore-availability requestHeader when settings.sendIgnoreAvailabilityHeader is false", () => {
     const got = convertModifiersToRules({
       ...modifiers,
       ...credentials,
-      enableInterceptsOnSkylarkUI: false,
+      settings: {
+        ...settings,
+        sendIgnoreAvailabilityHeader: false,
+      },
+    });
+
+    expect(got?.[0].action.requestHeaders).not.toHaveProperty(
+      "x-ignore-availability",
+    );
+  });
+
+  it("adds the Skylark UI domain into the excludedInitiatorDomains arr when settings.enabledOnSkylarkUI is false", () => {
+    const got = convertModifiersToRules({
+      ...modifiers,
+      ...credentials,
+      settings: {
+        ...settings,
+        enabledOnSkylarkUI: false,
+      },
     });
 
     expect(got).toEqual([

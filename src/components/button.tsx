@@ -27,7 +27,7 @@ export const Button = ({
       success && "bg-success text-success-content",
       danger && "bg-error text-white",
       !success && !danger && "bg-brand-primary text-white",
-      className
+      className,
     )}
     disabled={disabled}
     onClick={onClick}

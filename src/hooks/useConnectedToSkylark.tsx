@@ -15,7 +15,7 @@ export const useConnectedToSkylark = (credentials: SkylarkCredentials) => {
     object,
     { response?: { errors?: { errorType?: string; message?: string }[] } }
   >({
-    queryKey: ["credentialValidator", GET_SKYLARK_OBJECT_TYPES, credentials],
+    queryKey: ["credentialValidator", GET_SKYLARK_OBJECT_TYPES, uri, apiKey],
     queryFn: uri
       ? async () => {
           return request(
@@ -24,13 +24,15 @@ export const useConnectedToSkylark = (credentials: SkylarkCredentials) => {
             {},
             {
               Authorization: apiKey,
-            }
+            },
           );
         }
       : undefined,
     enabled,
     retry: false,
     cacheTime: 0,
+    staleTime: 0,
+    refetchInterval: 2000,
   });
 
   useEffect(() => {
@@ -45,10 +47,13 @@ export const useConnectedToSkylark = (credentials: SkylarkCredentials) => {
   const isConnected =
     enabled && !!(!invalidUri && !invalidToken && (isLoading || isSuccess));
 
-  return {
-    isLoading:
-      enabled &&
+  const isLoadingWrapper = Boolean(
+    credentials.uri &&
       (isLoading || credentials.uri !== uri || credentials.apiKey !== apiKey),
+  );
+
+  return {
+    isLoading: isLoadingWrapper,
     isConnected,
     invalidUri,
     invalidToken,

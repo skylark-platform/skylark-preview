@@ -1,5 +1,6 @@
 import {
   ExtensionMessageValueHeaders,
+  ExtensionSettings,
   SkylarkCredentials,
 } from "../interfaces";
 
@@ -8,9 +9,9 @@ export const convertModifiersToRules = ({
   timeTravel,
   uri,
   apiKey,
-  enableInterceptsOnSkylarkUI,
+  settings,
 }: ExtensionMessageValueHeaders &
-  SkylarkCredentials & { enableInterceptsOnSkylarkUI: boolean }):
+  SkylarkCredentials & { settings: ExtensionSettings }):
   | chrome.declarativeNetRequest.Rule[]
   | undefined => {
   if (!apiKey) {
@@ -18,7 +19,7 @@ export const convertModifiersToRules = ({
   }
 
   const allResourceTypes = Object.values(
-    chrome.declarativeNetRequest.ResourceType
+    chrome.declarativeNetRequest.ResourceType,
   );
 
   const requestHeaders: chrome.declarativeNetRequest.ModifyHeaderInfo[] =
@@ -39,18 +40,19 @@ export const convertModifiersToRules = ({
     requestHeaders.push(timeTravelRule);
   }
 
+  if (settings.sendIgnoreAvailabilityHeader) {
+    requestHeaders.push({
+      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      header: "x-ignore-availability",
+      value: "false",
+    });
+  }
+
   // Always bypass cache
   requestHeaders.push({
     operation: chrome.declarativeNetRequest.HeaderOperation.SET,
     header: "x-bypass-cache",
     value: "1",
-  });
-
-  // Always disable ignore availability so the dimension headers actually do something
-  requestHeaders.push({
-    operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-    header: "x-ignore-availability",
-    value: "false",
   });
 
   // Always overwrite the API key so that the user can supply an admin (for time-travel) one but their app can use a readonly one
@@ -78,7 +80,7 @@ export const convertModifiersToRules = ({
       condition: {
         urlFilter: uri,
         resourceTypes: allResourceTypes,
-        excludedInitiatorDomains: enableInterceptsOnSkylarkUI
+        excludedInitiatorDomains: settings.enabledOnSkylarkUI
           ? undefined
           : ["app.skylarkplatform.com"],
       },

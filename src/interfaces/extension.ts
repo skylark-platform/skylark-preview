@@ -1,3 +1,9 @@
+export interface ExtensionSettings {
+  enabledOnSkylarkUI: boolean;
+  sendIgnoreAvailabilityHeader: boolean;
+  showStatusOverlay: boolean;
+}
+
 export enum ExtensionMessageType {
   UpdateHeaders = "UpdateHeaders",
   GetActiveHeaders = "GetActiveHeaders",
@@ -5,6 +11,7 @@ export enum ExtensionMessageType {
   RefreshTab = "RefreshTab",
   EnableExtension = "EnableExtension",
   DisableExtension = "DisableExtension",
+  UpdateSettings = "UpdateSettings",
 }
 
 export type ExtensionMessageValueHeaders = {
@@ -15,12 +22,11 @@ export type ExtensionMessageValueHeaders = {
 export type ExtensionMessage =
   | {
       type: ExtensionMessageType.UpdateHeaders;
-      value: {
-        availability: ExtensionMessageValueHeaders;
-        options: {
-          enabledOnSkylarkUI: boolean;
-        };
-      };
+      value: ExtensionMessageValueHeaders;
+    }
+  | {
+      type: ExtensionMessageType.UpdateSettings;
+      value: ExtensionSettings;
     }
   | {
       type:

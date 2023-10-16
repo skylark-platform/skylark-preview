@@ -29,7 +29,7 @@ export const DimensionCombobox = ({
       : options.filter(
           (option) =>
             option.label.toLowerCase().includes(query.toLowerCase()) ||
-            option.value.toLowerCase().includes(query.toLowerCase())
+            option.value.toLowerCase().includes(query.toLowerCase()),
         );
 
   const selectedOption = options.find(({ value }) => selectedValue === value);
@@ -92,7 +92,7 @@ export const DimensionCombobox = ({
                       <span
                         className={clsx(
                           "`block truncate",
-                          selected ? "font-medium" : "font-normal"
+                          selected ? "font-medium" : "font-normal",
                         )}
                       >
                         {option.label}
@@ -101,7 +101,7 @@ export const DimensionCombobox = ({
                         <span
                           className={clsx(
                             "absolute inset-y-0 left-0 top-0 flex items-center pl-1 text-lg",
-                            active ? "text-black" : "text-brand-primary"
+                            active ? "text-black" : "text-brand-primary",
                           )}
                         >
                           <MdDone aria-hidden="true" className="h-4 w-4" />

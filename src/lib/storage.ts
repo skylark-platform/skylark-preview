@@ -1,16 +1,17 @@
 import { ExtensionStorageKeys } from "../constants";
 import {
   ExtensionMessageValueHeaders,
+  ExtensionSettings,
   ParsedSkylarkDimensionsWithValues,
   SkylarkCredentials,
 } from "../interfaces";
 
 export const getCredentialsFromStorage = async () => {
   const uriRes = (await chrome.storage.sync.get(
-    ExtensionStorageKeys.SkylarkUri
+    ExtensionStorageKeys.SkylarkUri,
   )) as { [ExtensionStorageKeys.SkylarkUri]: string };
   const apiKeyRes = (await chrome.storage.session.get(
-    ExtensionStorageKeys.SkylarkApiKey
+    ExtensionStorageKeys.SkylarkApiKey,
   )) as { [ExtensionStorageKeys.SkylarkApiKey]: string };
 
   const uri = uriRes[ExtensionStorageKeys.SkylarkUri];
@@ -37,14 +38,14 @@ export const setCredentialsToStorage = async ({
 export const getModifiersFromStorage =
   async (): Promise<ExtensionMessageValueHeaders> => {
     const res = (await chrome.storage.local.get(
-      ExtensionStorageKeys.Modifiers
+      ExtensionStorageKeys.Modifiers,
     )) as { [ExtensionStorageKeys.Modifiers]: ExtensionMessageValueHeaders };
 
     return res[ExtensionStorageKeys.Modifiers];
   };
 
 export const setModifiersToStorage = async (
-  modifiers: ExtensionMessageValueHeaders
+  modifiers: ExtensionMessageValueHeaders,
 ) => {
   console.log("[setModifiersToStorage] modifiers saved to storage:", modifiers);
   await chrome.storage.local.set({
@@ -54,16 +55,18 @@ export const setModifiersToStorage = async (
 
 export const getExtensionEnabledFromStorage = async (): Promise<boolean> => {
   const res = (await chrome.storage.local.get(
-    ExtensionStorageKeys.ExtensionEnabled
-  )) as { [ExtensionStorageKeys.ExtensionEnabled]: boolean };
+    ExtensionStorageKeys.ExtensionEnabled,
+  )) as { [ExtensionStorageKeys.ExtensionEnabled]: boolean | undefined };
 
-  return res[ExtensionStorageKeys.ExtensionEnabled];
+  const enabled = res[ExtensionStorageKeys.ExtensionEnabled];
+
+  return enabled === undefined ? true : enabled;
 };
 
 export const setExtensionEnabledToStorage = async (enabled: boolean) => {
   console.log(
     "[setExtensionEnabledToStorage] enabled state updated:",
-    enabled ? "ENABLED" : "DISABLED"
+    enabled ? "ENABLED" : "DISABLED",
   );
   await chrome.storage.local.set({
     [ExtensionStorageKeys.ExtensionEnabled]: enabled,
@@ -74,7 +77,7 @@ export const getParsedDimensionsFromStorage = async (): Promise<
   ParsedSkylarkDimensionsWithValues[] | undefined
 > => {
   const res = (await chrome.storage.local.get(
-    ExtensionStorageKeys.Dimensions
+    ExtensionStorageKeys.Dimensions,
   )) as {
     [ExtensionStorageKeys.Dimensions]:
       | ParsedSkylarkDimensionsWithValues[]
@@ -85,34 +88,40 @@ export const getParsedDimensionsFromStorage = async (): Promise<
 };
 
 export const setParsedDimensionsToStorage = async (
-  dimensions: ParsedSkylarkDimensionsWithValues[]
+  dimensions: ParsedSkylarkDimensionsWithValues[],
 ) => {
   console.log(
     "[setParsedDimensionsToStorage] dimensions from server saved to storage:",
-    dimensions
+    dimensions,
   );
   await chrome.storage.local.set({
     [ExtensionStorageKeys.Dimensions]: dimensions,
   });
 };
 
-export const getExtensionEnabledOnSkylarkUIFromStorage =
-  async (): Promise<boolean> => {
+export const getExtensionSettingsFromStorage =
+  async (): Promise<ExtensionSettings> => {
     const res = (await chrome.storage.local.get(
-      ExtensionStorageKeys.EnabledOnSkylarkUI
-    )) as { [ExtensionStorageKeys.EnabledOnSkylarkUI]: boolean };
+      ExtensionStorageKeys.Settings,
+    )) as { [ExtensionStorageKeys.Settings]: ExtensionSettings | undefined };
+    const settings = res[ExtensionStorageKeys.Settings];
 
-    return res[ExtensionStorageKeys.EnabledOnSkylarkUI];
+    return {
+      enabledOnSkylarkUI: true,
+      sendIgnoreAvailabilityHeader: true,
+      showStatusOverlay: true,
+      ...settings,
+    };
   };
 
-export const setExtensionEnabledOnSkylarkUIToStorage = async (
-  enabledOnSkylarkUI: boolean
+export const setExtensionSettingsToStorage = async (
+  settings: ExtensionSettings,
 ) => {
   console.log(
-    "[setExtensionEnabledOnSkylarkUIToStorage] enabledOnSkylarkUI saved to storage:",
-    enabledOnSkylarkUI
+    "[setExtensionSettingsToStorage] settings saved to storage:",
+    settings,
   );
   await chrome.storage.local.set({
-    [ExtensionStorageKeys.EnabledOnSkylarkUI]: enabledOnSkylarkUI,
+    [ExtensionStorageKeys.Settings]: settings,
   });
 };

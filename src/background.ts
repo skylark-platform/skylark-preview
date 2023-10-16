@@ -2,43 +2,53 @@ import {
   ExtensionMessage,
   ExtensionMessageType,
   ExtensionMessageValueHeaders,
+  ExtensionSettings,
 } from "./interfaces";
 import { convertModifiersToRules } from "./lib/converters";
 import {
   getCredentialsFromStorage,
   getExtensionEnabledFromStorage,
-  getExtensionEnabledOnSkylarkUIFromStorage,
+  getExtensionSettingsFromStorage,
   getModifiersFromStorage,
-  setExtensionEnabledOnSkylarkUIToStorage,
   setExtensionEnabledToStorage,
+  setExtensionSettingsToStorage,
   setModifiersToStorage,
 } from "./lib/storage";
 import { compareArrays } from "./lib/utils";
+
+const emitMessageToAllTabs = (message: ExtensionMessage) => {
+  chrome.tabs.query({}, function (tabs) {
+    tabs.map((tab) => {
+      if (tab.id) {
+        chrome.tabs.sendMessage(tab.id, message);
+      }
+    });
+  });
+};
 
 const getActiveRules = () => chrome.declarativeNetRequest.getDynamicRules();
 
 const updateActiveRulesIfEnabled = async (
   modifiers: ExtensionMessageValueHeaders,
-  opts: {
-    enabledOnSkylarkUI: boolean;
-  }
 ) => {
   const isEnabled = await getExtensionEnabledFromStorage();
   if (!isEnabled) {
     console.log(
-      "[updateActiveRulesIfEnabled] update requested when not enabled"
+      "[updateActiveRulesIfEnabled] update requested when not enabled",
     );
     return [];
   }
 
   const { uri, apiKey } = await getCredentialsFromStorage();
 
+  const settings = await getExtensionSettingsFromStorage();
+
   const rules =
     convertModifiersToRules({
       ...modifiers,
       uri,
       apiKey,
-      enableInterceptsOnSkylarkUI: opts.enabledOnSkylarkUI,
+      settings,
     }) || [];
 
   const activeRules = await getActiveRules();
@@ -46,7 +56,7 @@ const updateActiveRulesIfEnabled = async (
   if (rulesAreSame) {
     console.log(
       "[updateActiveRulesIfEnabled] update requested when no changes in rules exist",
-      { activeRules, newRules: rules }
+      { activeRules, newRules: rules },
     );
     return [];
   }
@@ -70,11 +80,22 @@ const updateActiveRulesIfEnabled = async (
   }
 
   await setModifiersToStorage(modifiers);
-  await setExtensionEnabledOnSkylarkUIToStorage(opts.enabledOnSkylarkUI);
+  await setExtensionSettingsToStorage(settings);
 
   console.log("[updateActiveRulesIfEnabled] update successful");
 
   return rules;
+};
+
+const updateSettings = async (settings: ExtensionSettings) => {
+  await setExtensionSettingsToStorage(settings);
+
+  emitMessageToAllTabs({
+    type: ExtensionMessageType.UpdateSettings,
+    value: settings,
+  });
+
+  return undefined;
 };
 
 const reloadCurrentTab = chrome.tabs.reload;
@@ -82,14 +103,15 @@ const reloadCurrentTab = chrome.tabs.reload;
 const enableExtension = async () => {
   await setExtensionEnabledToStorage(true);
   const modifiers = await getModifiersFromStorage();
-  const enabledOnSkylarkUI =
-    (await getExtensionEnabledOnSkylarkUIFromStorage()) || true;
-  const rules = await updateActiveRulesIfEnabled(modifiers, {
-    enabledOnSkylarkUI,
-  });
+
+  const rules = await updateActiveRulesIfEnabled(modifiers);
 
   await chrome.action.setIcon({
     path: "icons/logo-dot-32x32.png",
+  });
+
+  emitMessageToAllTabs({
+    type: ExtensionMessageType.EnableExtension,
   });
 
   return rules;
@@ -110,6 +132,10 @@ const disableExtension = async () => {
     path: "icons/logo-grayscale-32x32.png",
   });
 
+  emitMessageToAllTabs({
+    type: ExtensionMessageType.DisableExtension,
+  });
+
   const rules = await getActiveRules();
 
   return rules;
@@ -117,16 +143,13 @@ const disableExtension = async () => {
 
 const handleMessage = async (
   message: ExtensionMessage,
-  sendResponse: (message?: chrome.declarativeNetRequest.Rule[]) => void
+  sendResponse: (message?: chrome.declarativeNetRequest.Rule[]) => void,
 ) => {
   switch (message.type) {
     case ExtensionMessageType.UpdateHeaders:
-      return sendResponse(
-        await updateActiveRulesIfEnabled(
-          message.value.availability,
-          message.value.options
-        )
-      );
+      return sendResponse(await updateActiveRulesIfEnabled(message.value));
+    case ExtensionMessageType.UpdateSettings:
+      return sendResponse(await updateSettings(message.value));
     case ExtensionMessageType.EnableExtension:
       return sendResponse(await enableExtension());
     case ExtensionMessageType.DisableExtension:
@@ -145,7 +168,7 @@ chrome.runtime.onMessage.addListener(
   (message: ExtensionMessage, _, sendResponse) => {
     void handleMessage(message, sendResponse);
     return true;
-  }
+  },
 );
 
 const startupChecks = async () => {

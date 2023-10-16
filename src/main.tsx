@@ -5,9 +5,9 @@ import { App } from "./app";
 import "./index.css";
 
 ReactDOM.createRoot(
-  document.getElementById("skylark-preview-extension-app-root") as HTMLElement
+  document.getElementById("skylark-preview-extension-app-root") as HTMLElement,
 ).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

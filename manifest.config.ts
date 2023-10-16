@@ -39,6 +39,12 @@ export default defineManifest(({ mode }) => {
       service_worker: "src/background.ts",
       type: "module",
     },
+    content_scripts: [
+      {
+        js: ["src/content.tsx"],
+        matches: ["http://*/*", "https://*/*"],
+      },
+    ],
     host_permissions: ["http://*/*", "https://*/*"],
     permissions: ["background", "storage", "declarativeNetRequest"],
   };
