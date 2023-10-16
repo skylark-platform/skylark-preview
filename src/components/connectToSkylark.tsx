@@ -58,14 +58,16 @@ export const ConnectToSkylark = ({
       />
       <div className="flex items-center justify-between">
         <div className="flex h-full items-center">
-          {(!isConnected || invalidUri || invalidToken) && (
+          {(!isConnected || invalidUri || invalidToken || !creds?.apiKey) && (
             <p className="text-error">Invalid Credentials</p>
           )}
-          {isConnected && !creds?.apiKey?.startsWith("skylark-admin-") && (
-            <p className="text-error">
-              Extension may not work with a non-admin API key.
-            </p>
-          )}
+          {isConnected &&
+            creds?.apiKey &&
+            !creds?.apiKey?.startsWith("skylark-admin-") && (
+              <p className="text-error">
+                Extension may not work with a non-admin API key.
+              </p>
+            )}
         </div>
         <div className="mt-4 flex items-center">
           <button
