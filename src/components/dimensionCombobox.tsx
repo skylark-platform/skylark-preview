@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
-import { MdCancel, MdDone, MdUnfoldMore } from "react-icons/md";
+import { FiCheck, FiX, FiChevronDown } from "react-icons/fi";
 import clsx from "clsx";
 
 interface DimensionComboboxOption {
@@ -37,7 +37,7 @@ export const DimensionCombobox = ({
   return (
     <Combobox value={selectedOption || ""} onChange={onChange}>
       <div className="relative mt-1">
-        <div className="relative w-full cursor-default rounded-lg border border-gray-200 py-1.5 text-left text-sm text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+        <div className="relative w-full cursor-default rounded-lg border border-gray-200 py-1 text-left text-sm text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
           <Combobox.Label className="absolute left-2 top-0 -translate-y-1/2 transform text-xs font-medium uppercase text-manatee-500 md:left-3">
             <span className="bg-white px-2">{label}</span>
           </Combobox.Label>
@@ -49,7 +49,7 @@ export const DimensionCombobox = ({
               onChange={(event) => setQuery(event.target.value)}
             />
             <button className="absolute inset-y-0 right-0 top-0 flex items-center pr-2 text-manatee-500">
-              <MdUnfoldMore className="h-6 w-6" />
+              <FiChevronDown className="h-6 w-6" />
             </button>
           </Combobox.Button>
           {(query || selectedValue) && (
@@ -60,7 +60,7 @@ export const DimensionCombobox = ({
                 setQuery("");
               }}
             >
-              <MdCancel className="h-4 w-4" />
+              <FiX className="h-4 w-4" />
             </button>
           )}
         </div>
@@ -104,7 +104,7 @@ export const DimensionCombobox = ({
                             active ? "text-black" : "text-brand-primary",
                           )}
                         >
-                          <MdDone aria-hidden="true" className="h-4 w-4" />
+                          <FiCheck aria-hidden="true" className="h-4 w-4" />
                         </span>
                       ) : null}
                     </>

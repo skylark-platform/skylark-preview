@@ -8,12 +8,14 @@ import { SkylarkCredentials } from "../interfaces";
 import { setCredentialsToStorage } from "../lib/storage";
 
 interface ConnectToSkylarkProps {
+  variant: "authenticated" | "unauthenticated";
   className?: string;
   skylarkCreds: SkylarkCredentials;
   onUpdate: (creds?: SkylarkCredentials) => void;
 }
 
 export const ConnectToSkylark = ({
+  variant,
   className,
   skylarkCreds: initialCreds,
   onUpdate,
@@ -34,15 +36,19 @@ export const ConnectToSkylark = ({
     isLoading: isValidatingCredentials,
     invalidUri,
     invalidToken,
-  } = useConnectedToSkylark(creds);
+  } = useConnectedToSkylark(creds, { withInterval: false });
 
   const queryClient = useQueryClient();
 
   return (
-    <div className={clsx("flex h-full w-full flex-col", className)}>
-      <h2 className="my-4 font-heading text-lg font-bold">{`Enter your Skylark credentials`}</h2>
+    <div className={clsx("flex w-full flex-col", className)}>
+      <h2 className="mb-2 mt-4 font-heading text-lg font-bold">
+        {variant === "unauthenticated"
+          ? `Enter your Skylark credentials`
+          : `Skylark Account`}
+      </h2>
       <Input
-        className="my-4"
+        className="my-2"
         label="API URL"
         name="skylark-api-url"
         type={"string"}
@@ -75,7 +81,9 @@ export const ConnectToSkylark = ({
               void updateCredentials(true);
               queryClient.clear();
             }}
-          >{`Clear`}</button>
+          >
+            {variant === "unauthenticated" ? `Clear` : `Disconnect`}
+          </button>
           <Button
             className="ml-4"
             disabled={
@@ -84,7 +92,7 @@ export const ConnectToSkylark = ({
               !isConnected ||
               isValidatingCredentials
             }
-            success
+            success={variant === "unauthenticated"}
             onClick={() => {
               void updateCredentials();
               if (
@@ -94,9 +102,13 @@ export const ConnectToSkylark = ({
                 queryClient.clear();
               }
             }}
-            loading={isValidatingCredentials}
+            loading={Boolean(creds.apiKey && isValidatingCredentials)}
           >
-            {isValidatingCredentials ? `Verifying...` : `Connect`}
+            {creds.apiKey && isValidatingCredentials
+              ? `Verifying...`
+              : variant === "unauthenticated"
+              ? `Connect`
+              : `Update`}
           </Button>
         </div>
       </div>

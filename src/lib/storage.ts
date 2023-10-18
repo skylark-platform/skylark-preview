@@ -107,9 +107,10 @@ export const getExtensionSettingsFromStorage =
     const settings = res[ExtensionStorageKeys.Settings];
 
     return {
-      enabledOnSkylarkUI: true,
+      enabledOnSkylarkUI: false,
       sendIgnoreAvailabilityHeader: true,
       showStatusOverlay: true,
+      sendDraftHeader: false,
       ...settings,
     };
   };

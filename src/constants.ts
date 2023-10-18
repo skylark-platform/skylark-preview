@@ -17,4 +17,5 @@ export const EXTENSION_SETTINGS_DEFAULTS: ExtensionSettings = {
   enabledOnSkylarkUI: false,
   sendIgnoreAvailabilityHeader: true,
   showStatusOverlay: false, // to prevent blip
+  sendDraftHeader: false,
 };

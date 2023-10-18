@@ -2,19 +2,21 @@ import clsx from "clsx";
 import { SkylarkLogo } from "./skylarkBranding";
 import { Switch } from "./switch";
 import { Button } from "./button";
+import { PopupTab } from "../interfaces";
 
 interface HeaderProps {
   active: boolean;
   credentialsAdded: boolean;
+  tab: PopupTab;
   toggleEnabled: () => void;
-  onChangeCredentials: () => void;
+  onSettingsClick: () => void;
 }
 
 export const Header = ({
   active,
   credentialsAdded,
   toggleEnabled,
-  onChangeCredentials,
+  onSettingsClick,
 }: HeaderProps) => (
   <header className="flex h-16 w-full items-center justify-between bg-nav-bar px-4">
     <div className="flex items-center space-x-4">
@@ -43,10 +45,9 @@ export const Header = ({
         screenReaderDesc={`Toggle extension enabled`}
         toggleEnabled={toggleEnabled}
       />
-      <Button
-        className="ml-2"
-        onClick={() => onChangeCredentials()}
-      >{`Change Account`}</Button>
+      <Button className="ml-2" onClick={() => onSettingsClick()}>
+        {`Change Account`}
+      </Button>
     </div>
   </header>
 );
