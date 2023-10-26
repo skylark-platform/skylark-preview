@@ -27,7 +27,7 @@ export const Input = ({
     </label>
     <input
       aria-label={name}
-      className="form-input w-full rounded-lg border border-gray-200 p-3 text-sm text-gray-800 md:p-5"
+      className="form-input w-full rounded-lg border border-gray-200 p-3 text-sm text-gray-800"
       name={name}
       type={type}
       value={value}

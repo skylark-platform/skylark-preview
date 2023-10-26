@@ -6,7 +6,10 @@ import { useDebounce } from "use-debounce";
 import { useEffect } from "react";
 import { SkylarkCredentials } from "../interfaces";
 
-export const useConnectedToSkylark = (credentials: SkylarkCredentials) => {
+export const useConnectedToSkylark = (
+  credentials: SkylarkCredentials,
+  opts: { withInterval: boolean },
+) => {
   const [{ uri, apiKey }] = useDebounce(credentials, 500);
 
   const enabled = !!uri;
@@ -32,7 +35,7 @@ export const useConnectedToSkylark = (credentials: SkylarkCredentials) => {
     retry: false,
     cacheTime: 0,
     staleTime: 0,
-    refetchInterval: 2000,
+    refetchInterval: opts.withInterval ? 2000 : false,
   });
 
   useEffect(() => {

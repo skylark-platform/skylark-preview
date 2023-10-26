@@ -1,19 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Input } from "./input";
 import { Button } from "./button";
 import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
 import { useQueryClient } from "@tanstack/react-query";
 import { SkylarkCredentials } from "../interfaces";
-import { setCredentialsToStorage } from "../lib/storage";
+import {
+  getTempCredentialsFromStorage,
+  setCredentialsToStorage,
+} from "../lib/storage";
 
 interface ConnectToSkylarkProps {
+  variant: "authenticated" | "unauthenticated";
   className?: string;
   skylarkCreds: SkylarkCredentials;
   onUpdate: (creds?: SkylarkCredentials) => void;
 }
 
 export const ConnectToSkylark = ({
+  variant,
   className,
   skylarkCreds: initialCreds,
   onUpdate,
@@ -27,6 +32,10 @@ export const ConnectToSkylark = ({
       setCreds(emptyCredentials);
     }
     onUpdate(deleteCredentials ? undefined : creds);
+    await setCredentialsToStorage({
+      ...emptyCredentials,
+      useTempStorage: true,
+    });
   };
 
   const {
@@ -34,27 +43,57 @@ export const ConnectToSkylark = ({
     isLoading: isValidatingCredentials,
     invalidUri,
     invalidToken,
-  } = useConnectedToSkylark(creds);
+  } = useConnectedToSkylark(creds, { withInterval: false });
 
   const queryClient = useQueryClient();
 
+  const handleChange = (newCreds: Partial<SkylarkCredentials>) => {
+    const updatedCreds = {
+      ...creds,
+      ...newCreds,
+    };
+
+    setCreds(updatedCreds);
+    void setCredentialsToStorage({
+      ...updatedCreds,
+      useTempStorage: true,
+    });
+  };
+
+  const fetchTempCredentialsFromStorage = async () => {
+    const tempCredentials = await getTempCredentialsFromStorage();
+
+    setCreds((activeCreds) => ({
+      uri: tempCredentials.uri || activeCreds.uri,
+      apiKey: tempCredentials.apiKey || activeCreds.apiKey,
+    }));
+  };
+
+  useEffect(() => {
+    void fetchTempCredentialsFromStorage();
+  }, []);
+
   return (
-    <div className={clsx("flex h-full w-full flex-col", className)}>
-      <h2 className="my-4 font-heading text-lg font-bold">{`Enter your Skylark credentials`}</h2>
+    <div className={clsx("flex w-full flex-col", className)}>
+      <h2 className="mb-2 mt-4 font-heading text-lg font-bold">
+        {variant === "unauthenticated"
+          ? `Enter your Skylark credentials`
+          : `Skylark Account`}
+      </h2>
       <Input
-        className="my-4"
+        className="my-2"
         label="API URL"
         name="skylark-api-url"
         type={"string"}
         value={creds.uri}
-        onChange={(uri) => setCreds({ ...creds, uri })}
+        onChange={(uri) => handleChange({ uri })}
       />
       <Input
         label="API Key"
         name="skylark-api-key"
         type={"string"}
         value={creds.apiKey}
-        onChange={(apiKey) => setCreds({ ...creds, apiKey })}
+        onChange={(apiKey) => handleChange({ apiKey })}
       />
       <div className="flex items-center justify-between">
         <div className="flex h-full items-center">
@@ -75,7 +114,9 @@ export const ConnectToSkylark = ({
               void updateCredentials(true);
               queryClient.clear();
             }}
-          >{`Clear`}</button>
+          >
+            {variant === "unauthenticated" ? `Clear` : `Disconnect`}
+          </button>
           <Button
             className="ml-4"
             disabled={
@@ -84,7 +125,7 @@ export const ConnectToSkylark = ({
               !isConnected ||
               isValidatingCredentials
             }
-            success
+            success={variant === "unauthenticated"}
             onClick={() => {
               void updateCredentials();
               if (
@@ -94,9 +135,13 @@ export const ConnectToSkylark = ({
                 queryClient.clear();
               }
             }}
-            loading={isValidatingCredentials}
+            loading={Boolean(creds.apiKey && isValidatingCredentials)}
           >
-            {isValidatingCredentials ? `Verifying...` : `Connect`}
+            {creds.apiKey && isValidatingCredentials
+              ? `Verifying...`
+              : variant === "unauthenticated"
+              ? `Connect`
+              : `Update`}
           </Button>
         </div>
       </div>

@@ -48,6 +48,14 @@ export const convertModifiersToRules = ({
     });
   }
 
+  if (settings.sendDraftHeader) {
+    requestHeaders.push({
+      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      header: "x-draft",
+      value: "true",
+    });
+  }
+
   // Always bypass cache
   requestHeaders.push({
     operation: chrome.declarativeNetRequest.HeaderOperation.SET,

@@ -7,6 +7,8 @@ export enum QueryKeys {
 export enum ExtensionStorageKeys {
   SkylarkUri = "SkylarkUri",
   SkylarkApiKey = "SkylarkApiKey",
+  TempSkylarkUri = "TEMPSkylarkUri",
+  TempSkylarkApiKey = "TEMPSkylarkApiKey",
   Modifiers = "Modifiers",
   ExtensionEnabled = "ExtensionEnabled",
   Dimensions = "Dimensions",
@@ -17,4 +19,5 @@ export const EXTENSION_SETTINGS_DEFAULTS: ExtensionSettings = {
   enabledOnSkylarkUI: false,
   sendIgnoreAvailabilityHeader: true,
   showStatusOverlay: false, // to prevent blip
+  sendDraftHeader: false,
 };

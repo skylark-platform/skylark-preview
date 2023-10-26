@@ -60,7 +60,7 @@ export const AvailabilityModifier = ({
         />
       </div>
       <div className="mt-4">
-        <h2 className={clsx(headerClassName, "mb-2")}>{`Audience`}</h2>
+        <h2 className={clsx(headerClassName, "mb-1")}>{`Audience`}</h2>
         <div className="grid grid-cols-2 gap-2">
           {isDimensionsValuesLoading &&
             !dimensionsFromStorage &&

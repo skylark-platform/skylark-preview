@@ -21,6 +21,7 @@ const settings: ExtensionSettings = {
   enabledOnSkylarkUI: true,
   sendIgnoreAvailabilityHeader: true,
   showStatusOverlay: false,
+  sendDraftHeader: false,
 };
 
 describe("convertModifiersToRules", () => {
@@ -80,9 +81,26 @@ describe("convertModifiersToRules", () => {
       },
     });
 
-    expect(got?.[0].action.requestHeaders).not.toHaveProperty(
-      "x-ignore-availability",
+    const gotHeaders = got?.[0].action.requestHeaders?.map(
+      ({ header }) => header,
     );
+    expect(gotHeaders).not.toContain("x-ignore-availability");
+  });
+
+  it("adds the x-draft requestHeader when settings.sendDraftHeader is true", () => {
+    const got = convertModifiersToRules({
+      ...modifiers,
+      ...credentials,
+      settings: {
+        ...settings,
+        sendDraftHeader: true,
+      },
+    });
+
+    const gotHeaders = got?.[0].action.requestHeaders?.map(
+      ({ header }) => header,
+    );
+    expect(gotHeaders).toContain("x-draft");
   });
 
   it("adds the Skylark UI domain into the excludedInitiatorDomains arr when settings.enabledOnSkylarkUI is false", () => {

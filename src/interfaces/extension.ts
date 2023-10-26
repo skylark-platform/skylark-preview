@@ -2,6 +2,7 @@ export interface ExtensionSettings {
   enabledOnSkylarkUI: boolean;
   sendIgnoreAvailabilityHeader: boolean;
   showStatusOverlay: boolean;
+  sendDraftHeader: boolean;
 }
 
 export enum ExtensionMessageType {
@@ -36,3 +37,9 @@ export type ExtensionMessage =
         | ExtensionMessageType.DisableExtension
         | ExtensionMessageType.RefreshTab;
     };
+
+export enum PopupTab {
+  Main = "MAIN",
+  Auth = "AUTH",
+  Settings = "SETTINGS",
+}

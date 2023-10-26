@@ -128,9 +128,10 @@ describe("Settings", () => {
       expect(chrome.runtime.sendMessage).toBeCalledWith({
         type: ExtensionMessageType.UpdateSettings,
         value: {
-          enabledOnSkylarkUI: false,
+          enabledOnSkylarkUI: true,
           sendIgnoreAvailabilityHeader: true,
           showStatusOverlay: true,
+          sendDraftHeader: false,
         },
       }),
     );
@@ -161,9 +162,10 @@ describe("Settings", () => {
       expect(chrome.runtime.sendMessage).toBeCalledWith({
         type: ExtensionMessageType.UpdateSettings,
         value: {
-          enabledOnSkylarkUI: true,
+          enabledOnSkylarkUI: false,
           sendIgnoreAvailabilityHeader: false,
           showStatusOverlay: true,
+          sendDraftHeader: false,
         },
       }),
     );
@@ -182,7 +184,7 @@ describe("Settings", () => {
   it("toggles showing the status overlay", async () => {
     await act(async () => render(<App />));
 
-    const input = screen.getByText("Show extension enabled overlay");
+    const input = screen.getByText("Display extension enabled overlay");
 
     expect(input).toBeInTheDocument();
 
@@ -194,7 +196,40 @@ describe("Settings", () => {
         value: {
           enabledOnSkylarkUI: true,
           sendIgnoreAvailabilityHeader: true,
-          showStatusOverlay: false,
+          showStatusOverlay: true,
+          sendDraftHeader: false,
+        },
+      }),
+    );
+
+    await waitFor(() =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: {
+          dimensions: {},
+          timeTravel: "",
+        },
+      }),
+    );
+  });
+
+  it("toggles sending the draft header", async () => {
+    await act(async () => render(<App />));
+
+    const input = screen.getByText("Preview draft content");
+
+    expect(input).toBeInTheDocument();
+
+    await fireEvent.click(input);
+
+    await waitFor(() =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateSettings,
+        value: {
+          enabledOnSkylarkUI: false,
+          sendIgnoreAvailabilityHeader: true,
+          showStatusOverlay: true,
+          sendDraftHeader: true,
         },
       }),
     );
@@ -260,9 +295,22 @@ describe("Unauthenticated", () => {
       target: { value: "https://api.skylarkplatform.com" },
     });
 
+    await waitFor(() =>
+      expect(chrome.storage.sync.set).toBeCalledWith({
+        [ExtensionStorageKeys.TempSkylarkUri]:
+          "https://api.skylarkplatform.com",
+      }),
+    );
+
     await fireEvent.change(apiKeyInput, {
       target: { value: "123456" },
     });
+
+    await waitFor(() =>
+      expect(chrome.storage.session.set).toBeCalledWith({
+        [ExtensionStorageKeys.TempSkylarkApiKey]: "123456",
+      }),
+    );
 
     await waitFor(() => {
       expect(screen.queryByText("Verifying...")).not.toBeInTheDocument();
@@ -287,5 +335,13 @@ describe("Unauthenticated", () => {
         [ExtensionStorageKeys.SkylarkApiKey]: "123456",
       }),
     );
+
+    expect(chrome.storage.sync.set).toBeCalledWith({
+      [ExtensionStorageKeys.TempSkylarkUri]: "",
+    });
+
+    expect(chrome.storage.session.set).toBeCalledWith({
+      [ExtensionStorageKeys.TempSkylarkApiKey]: "",
+    });
   });
 });
