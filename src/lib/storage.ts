@@ -23,15 +23,37 @@ export const getCredentialsFromStorage = async () => {
   };
 };
 
+export const getTempCredentialsFromStorage = async () => {
+  const uriRes = (await chrome.storage.sync.get(
+    ExtensionStorageKeys.TempSkylarkUri,
+  )) as { [ExtensionStorageKeys.TempSkylarkUri]: string };
+  const apiKeyRes = (await chrome.storage.session.get(
+    ExtensionStorageKeys.TempSkylarkApiKey,
+  )) as { [ExtensionStorageKeys.TempSkylarkApiKey]: string };
+
+  const uri = uriRes[ExtensionStorageKeys.TempSkylarkUri];
+  const apiKey = apiKeyRes[ExtensionStorageKeys.TempSkylarkApiKey];
+
+  return {
+    uri,
+    apiKey,
+  };
+};
+
 export const setCredentialsToStorage = async ({
   uri,
   apiKey,
-}: SkylarkCredentials) => {
+  useTempStorage,
+}: SkylarkCredentials & { useTempStorage?: boolean }) => {
   await chrome.storage.sync.set({
-    [ExtensionStorageKeys.SkylarkUri]: uri,
+    [useTempStorage
+      ? ExtensionStorageKeys.TempSkylarkUri
+      : ExtensionStorageKeys.SkylarkUri]: uri,
   });
   await chrome.storage.session.set({
-    [ExtensionStorageKeys.SkylarkApiKey]: apiKey,
+    [useTempStorage
+      ? ExtensionStorageKeys.TempSkylarkApiKey
+      : ExtensionStorageKeys.SkylarkApiKey]: apiKey,
   });
 };
 

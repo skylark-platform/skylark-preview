@@ -7,6 +7,8 @@ export enum QueryKeys {
 export enum ExtensionStorageKeys {
   SkylarkUri = "SkylarkUri",
   SkylarkApiKey = "SkylarkApiKey",
+  TempSkylarkUri = "TEMPSkylarkUri",
+  TempSkylarkApiKey = "TEMPSkylarkApiKey",
   Modifiers = "Modifiers",
   ExtensionEnabled = "ExtensionEnabled",
   Dimensions = "Dimensions",

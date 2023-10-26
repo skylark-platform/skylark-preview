@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Input } from "./input";
 import { Button } from "./button";
 import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
 import { useQueryClient } from "@tanstack/react-query";
 import { SkylarkCredentials } from "../interfaces";
-import { setCredentialsToStorage } from "../lib/storage";
+import {
+  getTempCredentialsFromStorage,
+  setCredentialsToStorage,
+} from "../lib/storage";
 
 interface ConnectToSkylarkProps {
   variant: "authenticated" | "unauthenticated";
@@ -29,6 +32,10 @@ export const ConnectToSkylark = ({
       setCreds(emptyCredentials);
     }
     onUpdate(deleteCredentials ? undefined : creds);
+    await setCredentialsToStorage({
+      ...emptyCredentials,
+      useTempStorage: true,
+    });
   };
 
   const {
@@ -39,6 +46,32 @@ export const ConnectToSkylark = ({
   } = useConnectedToSkylark(creds, { withInterval: false });
 
   const queryClient = useQueryClient();
+
+  const handleChange = (newCreds: Partial<SkylarkCredentials>) => {
+    const updatedCreds = {
+      ...creds,
+      ...newCreds,
+    };
+
+    setCreds(updatedCreds);
+    void setCredentialsToStorage({
+      ...updatedCreds,
+      useTempStorage: true,
+    });
+  };
+
+  const fetchTempCredentialsFromStorage = async () => {
+    const tempCredentials = await getTempCredentialsFromStorage();
+
+    setCreds((activeCreds) => ({
+      uri: tempCredentials.uri || activeCreds.uri,
+      apiKey: tempCredentials.apiKey || activeCreds.apiKey,
+    }));
+  };
+
+  useEffect(() => {
+    void fetchTempCredentialsFromStorage();
+  }, []);
 
   return (
     <div className={clsx("flex w-full flex-col", className)}>
@@ -53,14 +86,14 @@ export const ConnectToSkylark = ({
         name="skylark-api-url"
         type={"string"}
         value={creds.uri}
-        onChange={(uri) => setCreds({ ...creds, uri })}
+        onChange={(uri) => handleChange({ uri })}
       />
       <Input
         label="API Key"
         name="skylark-api-key"
         type={"string"}
         value={creds.apiKey}
-        onChange={(apiKey) => setCreds({ ...creds, apiKey })}
+        onChange={(apiKey) => handleChange({ apiKey })}
       />
       <div className="flex items-center justify-between">
         <div className="flex h-full items-center">
