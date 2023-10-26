@@ -14,16 +14,22 @@ interface SettingsProps {
 const Link = ({
   text,
   href,
+  inline,
   className,
 }: {
   text: string;
   href: string;
+  inline?: boolean;
   className?: string;
 }) => (
   <a
     href={href}
     target="_blank"
-    className={clsx("block text-brand-primary transition-opacity", className)}
+    className={clsx(
+      "text-brand-primary transition-opacity",
+      !inline && "block",
+      className,
+    )}
   >
     {text}
   </a>
@@ -137,6 +143,16 @@ export const Settings = ({
             <p>
               However, when using Skylark Preview, you may want to view and
               validate the draft versions before committing to publishing them.
+            </p>
+            <p>
+              Warning: Enabling this puts every request in{" "}
+              <Link
+                href="https://docs.skylarkplatform.com/docs/ignoring-availability"
+                text="Ignore Availability mode"
+                inline
+              />{" "}
+              meaning any Availability rules are ignored and all objects are
+              returned.
             </p>
           </>
         }
