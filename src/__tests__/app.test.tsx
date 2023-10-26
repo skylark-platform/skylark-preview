@@ -295,9 +295,22 @@ describe("Unauthenticated", () => {
       target: { value: "https://api.skylarkplatform.com" },
     });
 
+    await waitFor(() =>
+      expect(chrome.storage.sync.set).toBeCalledWith({
+        [ExtensionStorageKeys.TempSkylarkUri]:
+          "https://api.skylarkplatform.com",
+      }),
+    );
+
     await fireEvent.change(apiKeyInput, {
       target: { value: "123456" },
     });
+
+    await waitFor(() =>
+      expect(chrome.storage.session.set).toBeCalledWith({
+        [ExtensionStorageKeys.TempSkylarkApiKey]: "123456",
+      }),
+    );
 
     await waitFor(() => {
       expect(screen.queryByText("Verifying...")).not.toBeInTheDocument();
@@ -322,5 +335,13 @@ describe("Unauthenticated", () => {
         [ExtensionStorageKeys.SkylarkApiKey]: "123456",
       }),
     );
+
+    expect(chrome.storage.sync.set).toBeCalledWith({
+      [ExtensionStorageKeys.TempSkylarkUri]: "",
+    });
+
+    expect(chrome.storage.session.set).toBeCalledWith({
+      [ExtensionStorageKeys.TempSkylarkApiKey]: "",
+    });
   });
 });
