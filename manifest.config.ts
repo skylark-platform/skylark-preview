@@ -24,7 +24,7 @@ export default defineManifest(({ mode }) => {
     // up to four numbers separated by dots
     version: `${major}.${minor}.${patch}`,
     // semver is OK in "version_name"
-    version_name: version,
+    // version_name: version,
     icons: {
       "16": "icons/logo-16x16.png",
       "32": "icons/logo-32x32.png",
@@ -36,8 +36,9 @@ export default defineManifest(({ mode }) => {
       default_title: name,
     },
     background: {
-      service_worker: "src/background.ts",
-      type: "module",
+      scripts: ["src/background.ts"],
+      // service_worker: "src/background.ts",
+      // type: "module",
     },
     content_scripts: [
       {
@@ -46,6 +47,11 @@ export default defineManifest(({ mode }) => {
       },
     ],
     host_permissions: ["http://*/*", "https://*/*"],
-    permissions: ["background", "storage", "declarativeNetRequest"],
+    permissions: ["storage", "declarativeNetRequest"],
+    browser_specific_settings: {
+      gecko: {
+        id: "support@skylarkplatform.com",
+      },
+    },
   };
 });

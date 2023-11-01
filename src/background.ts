@@ -16,17 +16,24 @@ import {
 } from "./lib/storage";
 import { compareArrays } from "./lib/utils";
 
-const emitMessageToAllTabs = (message: ExtensionMessage) => {
-  chrome.tabs.query({}, function (tabs) {
-    tabs.map((tab) => {
-      if (tab.id) {
-        chrome.tabs.sendMessage(tab.id, message);
-      }
-    });
+const emitMessageToAllTabs = async (message: ExtensionMessage) => {
+  // chrome.tabs.query({}, function (tabs) {
+  //   tabs.map((tab) => {
+  //     if (tab.id) {
+  //       chrome.tabs.sendMessage(tab.id, message);
+  //     }
+  //   });
+  // });
+
+  const tabs = await browser.tabs.query({});
+  tabs.map((tab) => {
+    if (tab.id) {
+      browser.tabs.sendMessage(tab.id, message);
+    }
   });
 };
 
-const getActiveRules = () => chrome.declarativeNetRequest.getDynamicRules();
+const getActiveRules = () => browser.declarativeNetRequest.getDynamicRules();
 
 const updateActiveRulesIfEnabled = async (
   modifiers: ExtensionMessageValueHeaders,
@@ -66,13 +73,14 @@ const updateActiveRulesIfEnabled = async (
     oldRules: activeRules,
   });
 
-  const updateRuleOptions: chrome.declarativeNetRequest.UpdateRuleOptions = {
-    removeRuleIds: activeRules.map((rule) => rule.id), // remove existing rules
-    addRules: rules,
-  };
+  const updateRuleOptions: browser.declarativeNetRequest._UpdateDynamicRulesOptions =
+    {
+      removeRuleIds: activeRules.map((rule) => rule.id), // remove existing rules
+      addRules: rules as browser.declarativeNetRequest.Rule[],
+    };
 
   try {
-    await chrome.declarativeNetRequest.updateDynamicRules(updateRuleOptions);
+    await browser.declarativeNetRequest.updateDynamicRules(updateRuleOptions);
   } catch (err) {
     console.error("[updateActiveRulesIfEnabled] error updating rules", {
       updateRuleOptions,
@@ -98,7 +106,7 @@ const updateSettings = async (settings: ExtensionSettings) => {
   return undefined;
 };
 
-const reloadCurrentTab = chrome.tabs.reload;
+const reloadCurrentTab = browser.tabs.reload;
 
 const enableExtension = async () => {
   await setExtensionEnabledToStorage(true);
@@ -106,7 +114,7 @@ const enableExtension = async () => {
 
   const rules = await updateActiveRulesIfEnabled(modifiers);
 
-  await chrome.action.setIcon({
+  await browser.action.setIcon({
     path: "icons/logo-dot-32x32.png",
   });
 
@@ -121,14 +129,15 @@ const disableExtension = async () => {
   await setExtensionEnabledToStorage(false);
   const activeRules = await getActiveRules();
 
-  const updateRuleOptions: chrome.declarativeNetRequest.UpdateRuleOptions = {
-    removeRuleIds: activeRules.map((rule) => rule.id),
-    addRules: [],
-  };
+  const updateRuleOptions: browser.declarativeNetRequest._UpdateDynamicRulesOptions =
+    {
+      removeRuleIds: activeRules.map((rule) => rule.id),
+      addRules: [],
+    };
 
-  await chrome.declarativeNetRequest.updateDynamicRules(updateRuleOptions);
+  await browser.declarativeNetRequest.updateDynamicRules(updateRuleOptions);
 
-  await chrome.action.setIcon({
+  await browser.action.setIcon({
     path: "icons/logo-grayscale-32x32.png",
   });
 
@@ -143,7 +152,11 @@ const disableExtension = async () => {
 
 const handleMessage = async (
   message: ExtensionMessage,
-  sendResponse: (message?: chrome.declarativeNetRequest.Rule[]) => void,
+  sendResponse: (
+    message?:
+      | browser.declarativeNetRequest.Rule[]
+      | chrome.declarativeNetRequest.Rule[],
+  ) => void,
 ) => {
   switch (message.type) {
     case ExtensionMessageType.UpdateHeaders:
@@ -164,7 +177,7 @@ const handleMessage = async (
   }
 };
 
-chrome.runtime.onMessage.addListener(
+browser.runtime.onMessage.addListener(
   (message: ExtensionMessage, _, sendResponse) => {
     void handleMessage(message, sendResponse);
     return true;

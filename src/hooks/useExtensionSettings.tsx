@@ -39,7 +39,7 @@ export const useExtensionSettings = () => {
     setSettings(updatedSettings);
   };
 
-  chrome.runtime.onMessage.addListener(
+  browser.runtime.onMessage.addListener(
     (message: ExtensionMessage, _, sendResponse) => {
       if (message.type === ExtensionMessageType.UpdateSettings) {
         setSettings(message.value);

@@ -10,4 +10,4 @@ export const compareArrays = (a: unknown[], b: unknown[]) =>
   a.length === b.length && a.every((element, index) => element === b[index]);
 
 export const sendExtensionMessage = (message: ExtensionMessage) =>
-  chrome.runtime.sendMessage(message);
+  browser.runtime.sendMessage(message);
