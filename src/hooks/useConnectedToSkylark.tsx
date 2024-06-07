@@ -25,7 +25,8 @@ export const useConnectedToSkylark = (
 
   const { data, error, isError, isLoading, isSuccess, refetch } = useQuery<
     GQLSkylarkUserAndAccountResponse | undefined,
-    { response?: { errors?: { errorType?: string; message?: string }[] } }
+    { response?: { errors?: { errorType?: string; message?: string }[] } },
+    GQLSkylarkUserAndAccountResponse
   >({
     queryKey: ["credentialValidator", GET_USER_AND_ACCOUNT, uri, apiKey],
     queryFn: async (): Promise<
@@ -44,7 +45,7 @@ export const useConnectedToSkylark = (
     },
     enabled,
     retry: false,
-    cacheTime: 0,
+    gcTime: 0,
     staleTime: 0,
     refetchInterval: opts.withInterval ? 2000 : false,
   });

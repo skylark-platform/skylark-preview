@@ -1,5 +1,5 @@
 import {
-  QueryFunctionContext,
+  InfiniteData,
   QueryKey,
   useInfiniteQuery,
 } from "@tanstack/react-query";
@@ -58,11 +58,15 @@ export const useAvailabilityDimensionsWithValues = (
     hasNextPage,
     isLoading: isDimensionsValuesLoading,
     ...rest
-  } = useInfiniteQuery<GQLSkylarkListAvailabilityDimensionValuesResponse>({
+  } = useInfiniteQuery<
+    GQLSkylarkListAvailabilityDimensionValuesResponse,
+    Error,
+    InfiniteData<GQLSkylarkListAvailabilityDimensionValuesResponse>,
+    QueryKey,
+    Record<string, string>
+  >({
     queryKey: [QueryKeys.AvailabilityDimensions, dimensionsWithoutValues],
-    queryFn: ({
-      pageParam: nextTokens,
-    }: QueryFunctionContext<QueryKey, Record<string, string>>) => {
+    queryFn: ({ pageParam: nextTokens }) => {
       const query = createGetAvailabilityDimensionValues(
         dimensionsWithoutValues,
         nextTokens,
@@ -73,6 +77,7 @@ export const useAvailabilityDimensionsWithValues = (
         query: query as DocumentNode,
       });
     },
+    initialPageParam: {},
     getNextPageParam,
     enabled: !!(uri && token && dimensionsWithoutValues),
   });
