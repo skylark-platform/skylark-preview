@@ -122,7 +122,7 @@ export const ConnectToSkylark = ({
   ];
 
   return (
-    (<div className={clsx("flex w-full flex-col", className)}>
+    <div className={clsx("flex w-full flex-col", className)}>
       <h2 className="mb-2 mt-4 font-heading text-lg font-bold">
         {variant === "unauthenticated"
           ? `Enter your Skylark credentials`
@@ -226,6 +226,6 @@ export const ConnectToSkylark = ({
           </Button>
         </div>
       </div>
-    </div>)
+    </div>
   );
 };
