@@ -1,4 +1,5 @@
 import {
+  InfiniteData,
   QueryFunctionContext,
   QueryKey,
   useInfiniteQuery,
@@ -19,27 +20,30 @@ export const useAvailabilityDimensions = ({
   uri: string;
   token: string;
 }) => {
-  const { data, fetchNextPage, hasNextPage, ...rest } =
-    useInfiniteQuery<GQLSkylarkListAvailabilityDimensionsResponse>({
-      enabled: !!(uri && token),
-      queryKey: [
-        QueryKeys.AvailabilityDimensions,
-        LIST_AVAILABILITY_DIMENSIONS,
-      ],
-      queryFn: ({
-        pageParam: nextToken,
-      }: QueryFunctionContext<QueryKey, string>) =>
-        skylarkRequest({
-          uri,
-          token,
-          query: LIST_AVAILABILITY_DIMENSIONS,
-          variables: {
-            nextToken,
-          },
-        }),
-      getNextPageParam: (lastPage): string | undefined =>
-        lastPage.listDimensions.next_token || undefined,
-    });
+  const { data, fetchNextPage, hasNextPage, ...rest } = useInfiniteQuery<
+    GQLSkylarkListAvailabilityDimensionsResponse,
+    Error,
+    InfiniteData<GQLSkylarkListAvailabilityDimensionsResponse>,
+    QueryKey,
+    string
+  >({
+    enabled: !!(uri && token),
+    queryKey: [QueryKeys.AvailabilityDimensions, LIST_AVAILABILITY_DIMENSIONS],
+    queryFn: ({
+      pageParam: nextToken,
+    }: QueryFunctionContext<QueryKey, string>) =>
+      skylarkRequest({
+        uri,
+        token,
+        query: LIST_AVAILABILITY_DIMENSIONS,
+        variables: {
+          nextToken,
+        },
+      }),
+    getNextPageParam: (lastPage) =>
+      lastPage.listDimensions.next_token || undefined,
+    initialPageParam: "",
+  });
 
   // This if statement ensures that all data is fetched
   // We could remove it and add a load more button
