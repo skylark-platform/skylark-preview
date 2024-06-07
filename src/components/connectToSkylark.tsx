@@ -30,8 +30,6 @@ export const ConnectToSkylark = ({
 }: ConnectToSkylarkProps) => {
   const [creds, setCreds] = useState<SkylarkCredentials>(initialCreds);
 
-  console.log({ creds, initialCreds });
-
   const updateCredentials = async (deleteCredentials?: boolean) => {
     const emptyCredentials: SkylarkCredentials = { uri: "", apiKey: "" };
     await setCredentialsToStorage(deleteCredentials ? emptyCredentials : creds);
@@ -156,8 +154,6 @@ export const ConnectToSkylark = ({
                 API Key permissions for{" "}
                 <span className="capitalize">{`${user.role?.replace(/_/g, " ").toLocaleLowerCase()}`}</span>
               </p>
-              {/* Green tick / Red cross depending on whether its enabled. Tool tip to say what permission you need */}
-              {/* Red asterisk to denote required permissions */}
               {sections.map(({ title, info }) => (
                 <div>
                   <p className="mt-4 font-medium">{title}:</p>
