@@ -20,7 +20,7 @@ export const Input = ({
 }: InputProps) => (
   <div className={clsx("relative mt-2 w-full", className)}>
     <label
-      className="absolute left-2 top-0 -translate-y-1/2 transform text-xs font-medium uppercase text-manatee-500  md:left-3"
+      className="absolute left-2 top-0 -translate-y-1/2 transform text-xs font-medium uppercase text-manatee-500 md:left-3"
       htmlFor={name}
     >
       <span className="bg-white px-2">{label}</span>

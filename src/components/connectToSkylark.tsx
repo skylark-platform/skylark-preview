@@ -140,8 +140,8 @@ export const ConnectToSkylark = ({
             {creds.apiKey && isValidatingCredentials
               ? `Verifying...`
               : variant === "unauthenticated"
-              ? `Connect`
-              : `Update`}
+                ? `Connect`
+                : `Update`}
           </Button>
         </div>
       </div>

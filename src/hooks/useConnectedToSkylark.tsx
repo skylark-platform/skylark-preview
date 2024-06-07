@@ -19,18 +19,19 @@ export const useConnectedToSkylark = (
     { response?: { errors?: { errorType?: string; message?: string }[] } }
   >({
     queryKey: ["credentialValidator", GET_SKYLARK_OBJECT_TYPES, uri, apiKey],
-    queryFn: uri
-      ? async () => {
-          return request(
-            uri,
-            GET_SKYLARK_OBJECT_TYPES,
-            {},
-            {
-              Authorization: apiKey,
-            },
-          );
-        }
-      : undefined,
+    queryFn: async () => {
+      return (
+        uri &&
+        request(
+          uri,
+          GET_SKYLARK_OBJECT_TYPES,
+          {},
+          {
+            Authorization: apiKey,
+          },
+        )
+      );
+    },
     enabled,
     retry: false,
     cacheTime: 0,
