@@ -1,7 +1,9 @@
 import { gql } from "graphql-request";
 
+export const wrapQueryName = (str: string) => `SL_PREVIEW_${str}`.toUpperCase();
+
 export const LIST_AVAILABILITY_DIMENSIONS = gql`
-  query LIST_AVAILABILITY_DIMENSIONS($nextToken: String) {
+  query ${wrapQueryName("LIST_AVAILABILITY_DIMENSIONS")}($nextToken: String) {
     listDimensions(next_token: $nextToken, limit: 50) {
       objects {
         uid
@@ -17,12 +19,21 @@ export const LIST_AVAILABILITY_DIMENSIONS = gql`
 `;
 
 // This is used to check the user is connected to Skylark + in tests
-export const GET_SKYLARK_OBJECT_TYPES = gql`
-  query GET_SKYLARK_OBJECT_TYPES {
-    __type(name: "Metadata") {
-      possibleTypes {
-        name
-      }
-    }
+export const GET_USER_AND_ACCOUNT = gql`
+query ${wrapQueryName("GET_USER_AND_ACCOUNT")} {
+  user: getUser {
+    account
+    role
+    permissions
   }
+  account: getAccount {
+    config {
+      raise_uid_exception
+      draft_update
+      default_language
+    }
+    account_id
+    skylark_version
+  }
+}
 `;

@@ -69,6 +69,7 @@ export const storageGetHandler = (
     [ExtensionStorageKeys.Modifiers]: {
       timeTravel: "",
       dimensions: {},
+      language: "",
     } satisfies ExtensionMessageValueHeaders,
     [ExtensionStorageKeys.SkylarkUri]: "https://skylark.com/graphql",
     [ExtensionStorageKeys.SkylarkApiKey]: "api-key",

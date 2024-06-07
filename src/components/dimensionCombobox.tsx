@@ -3,16 +3,16 @@ import { Combobox, Transition } from "@headlessui/react";
 import { FiCheck, FiX, FiChevronDown } from "react-icons/fi";
 import clsx from "clsx";
 
-interface DimensionComboboxOption {
+export interface ComboboxOption {
   value: string;
   label: string;
 }
 
-interface DimensionComboboxProps {
+export interface DimensionComboboxProps {
   label: string;
-  selectedValue: DimensionComboboxOption["value"];
-  options: DimensionComboboxOption[];
-  onChange: (value?: DimensionComboboxOption) => void;
+  selectedValue: ComboboxOption["value"];
+  options: ComboboxOption[];
+  onChange: (value?: ComboboxOption) => void;
 }
 
 export const DimensionCombobox = ({
@@ -45,7 +45,7 @@ export const DimensionCombobox = ({
           <Combobox.Button as="div" className="">
             <Combobox.Input
               className="w-full border-none py-2 pl-4 pr-10 text-sm leading-5 text-gray-800 focus:ring-0"
-              displayValue={(option: DimensionComboboxOption) => option.label}
+              displayValue={(option: ComboboxOption) => option.label}
               onChange={(event) => setQuery(event.target.value)}
             />
             <button className="absolute inset-y-0 right-0 top-0 flex items-center pr-2 text-manatee-500">

@@ -196,6 +196,7 @@ export const Popup = () => {
                   settings={settings}
                   updateSettings={setSettings}
                   className="mt-4 px-4"
+                  skylarkCreds={creds}
                 />
               </>
             )}

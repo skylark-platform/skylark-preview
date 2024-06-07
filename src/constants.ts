@@ -17,7 +17,7 @@ export enum ExtensionStorageKeys {
 
 export const EXTENSION_SETTINGS_DEFAULTS: ExtensionSettings = {
   enabledOnSkylarkUI: false,
-  sendIgnoreAvailabilityHeader: true,
+  sendIgnoreAvailabilityHeader: false,
   showStatusOverlay: false, // to prevent blip
   sendDraftHeader: false,
 };

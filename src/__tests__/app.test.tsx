@@ -77,6 +77,7 @@ it("changes an active dimension and saves to storage", async () => {
         value: {
           dimensions: { "customer-types": "standard" },
           timeTravel: "",
+          language: "",
         },
       }),
     { timeout: 5000 },
@@ -108,12 +109,47 @@ it("changes the time travel and saves to storage", async () => {
         value: {
           dimensions: {},
           timeTravel: "2017-06-01T08:30",
+          language: "",
         },
       }),
     { timeout: 5000 },
   );
 });
 
+it("changes the language and saves to storage", async () => {
+  await act(async () => render(<App />));
+
+  const customerTypesCombobox = screen.getByRole("combobox", {
+    name: "Language",
+  });
+
+  expect(customerTypesCombobox).toBeInTheDocument();
+
+  await fireEvent.click(customerTypesCombobox);
+
+  const withinListBox = within(screen.getByRole("listbox"));
+  await fireEvent.click(withinListBox.getByText("en-GB"));
+
+  await waitFor(() =>
+    expect(chrome.runtime.sendMessage).toBeCalledWith({
+      type: ExtensionMessageType.UpdateSettings,
+      value: expect.any(Object),
+    }),
+  );
+
+  await waitFor(
+    () =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: {
+          dimensions: {},
+          timeTravel: "",
+          language: "en-GB",
+        },
+      }),
+    { timeout: 5000 },
+  );
+});
 describe("Settings", () => {
   it("toggles the enabled on Skylark UI and saves to storage", async () => {
     await act(async () => render(<App />));
@@ -142,6 +178,7 @@ describe("Settings", () => {
         value: {
           dimensions: {},
           timeTravel: "",
+          language: "",
         },
       }),
     );
@@ -156,6 +193,10 @@ describe("Settings", () => {
 
     expect(input).toBeInTheDocument();
 
+    await waitFor(() => {
+      expect(screen.getByText("Refresh")).toBeInTheDocument();
+    });
+
     await fireEvent.click(input);
 
     await waitFor(() =>
@@ -163,7 +204,7 @@ describe("Settings", () => {
         type: ExtensionMessageType.UpdateSettings,
         value: {
           enabledOnSkylarkUI: false,
-          sendIgnoreAvailabilityHeader: false,
+          sendIgnoreAvailabilityHeader: true,
           showStatusOverlay: true,
           sendDraftHeader: false,
         },
@@ -176,6 +217,7 @@ describe("Settings", () => {
         value: {
           dimensions: {},
           timeTravel: "",
+          language: "",
         },
       }),
     );
@@ -208,6 +250,7 @@ describe("Settings", () => {
         value: {
           dimensions: {},
           timeTravel: "",
+          language: "",
         },
       }),
     );
@@ -219,6 +262,12 @@ describe("Settings", () => {
     const input = screen.getByText("Preview draft content");
 
     expect(input).toBeInTheDocument();
+
+    expect(input).not.toBeDisabled();
+
+    await waitFor(() => {
+      expect(screen.getByText("Refresh")).toBeInTheDocument();
+    });
 
     await fireEvent.click(input);
 
@@ -240,6 +289,7 @@ describe("Settings", () => {
         value: {
           dimensions: {},
           timeTravel: "",
+          language: "",
         },
       }),
     );
