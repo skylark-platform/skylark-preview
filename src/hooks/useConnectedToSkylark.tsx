@@ -1,10 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 
-import { GET_SKYLARK_OBJECT_TYPES } from "../graphql";
+import { GET_USER_AND_ACCOUNT } from "../graphql";
 import { useDebounce } from "use-debounce";
 import { useEffect } from "react";
-import { SkylarkCredentials } from "../interfaces";
+import {
+  GQLSkylarkUserAndAccountResponse,
+  SkylarkCredentials,
+  SkylarkUserPermission,
+} from "../interfaces";
+
+export const REQUIRED_PERMISSIONS: SkylarkUserPermission[] = [
+  "READ",
+  "TIME_TRAVEL",
+];
 
 export const useConnectedToSkylark = (
   credentials: SkylarkCredentials,
@@ -15,22 +24,23 @@ export const useConnectedToSkylark = (
   const enabled = !!uri;
 
   const { data, error, isError, isLoading, isSuccess, refetch } = useQuery<
-    object,
+    GQLSkylarkUserAndAccountResponse | undefined,
     { response?: { errors?: { errorType?: string; message?: string }[] } }
   >({
-    queryKey: ["credentialValidator", GET_SKYLARK_OBJECT_TYPES, uri, apiKey],
-    queryFn: async () => {
-      return (
-        uri &&
-        request(
-          uri,
-          GET_SKYLARK_OBJECT_TYPES,
-          {},
-          {
-            Authorization: apiKey,
-          },
-        )
-      );
+    queryKey: ["credentialValidator", GET_USER_AND_ACCOUNT, uri, apiKey],
+    queryFn: async (): Promise<
+      GQLSkylarkUserAndAccountResponse | undefined
+    > => {
+      return uri
+        ? request(
+            uri,
+            GET_USER_AND_ACCOUNT,
+            {},
+            {
+              Authorization: apiKey,
+            },
+          )
+        : undefined;
     },
     enabled,
     retry: false,
@@ -46,6 +56,10 @@ export const useConnectedToSkylark = (
   const unauthenticated =
     error?.response?.errors?.[0]?.errorType === "UnauthorizedException";
   const invalidUri = !uri || (!data && isError && !unauthenticated);
+
+  const tokenHasCorrectPermissions =
+    data?.user &&
+    REQUIRED_PERMISSIONS.every((perm) => data.user.permissions.includes(perm));
   const invalidToken = invalidUri || (error && unauthenticated) || false;
 
   const isConnected =
@@ -56,10 +70,29 @@ export const useConnectedToSkylark = (
       (isLoading || credentials.uri !== uri || credentials.apiKey !== apiKey),
   );
 
+  const permissions = {
+    canRead: Boolean(data?.user.permissions.includes("READ")),
+    canReadDrafts: Boolean(
+      data?.user.permissions.includes("WRITE") &&
+        data?.user.permissions.includes("IGNORE_AVAILABILITY"),
+    ),
+    canTimeTravel: Boolean(data?.user.permissions.includes("TIME_TRAVEL")),
+    canIgnoreAvailability: Boolean(
+      data?.user.permissions.includes("IGNORE_AVAILABILITY"),
+    ),
+  };
+
   return {
+    user: {
+      ...data?.user,
+      ...permissions,
+    },
+    account: data?.account,
     isLoading: isLoadingWrapper,
     isConnected,
     invalidUri,
     invalidToken,
+    tokenHasCorrectPermissions,
+    permissions,
   };
 };

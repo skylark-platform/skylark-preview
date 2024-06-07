@@ -17,6 +17,7 @@ export enum ExtensionMessageType {
 
 export type ExtensionMessageValueHeaders = {
   timeTravel: string;
+  language: string;
   dimensions: Record<string, string>;
 };
 

@@ -9,6 +9,8 @@ import {
 import { DimensionCombobox } from "./dimensionCombobox";
 import { Input } from "./input";
 import { setParsedDimensionsToStorage } from "../lib/storage";
+import { LanguageCombobox } from "./languageCombobox";
+import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
 
 interface AvailabilityModifierProps {
   className: string;
@@ -31,6 +33,10 @@ export const AvailabilityModifier = ({
   const { dimensions: dimensionsFromServer, isDimensionsValuesLoading } =
     useAvailabilityDimensionsWithValues(skylarkCreds.uri, skylarkCreds.apiKey);
 
+  const { account, user } = useConnectedToSkylark(skylarkCreds, {
+    withInterval: false,
+  });
+
   useEffect(() => {
     if (!isDimensionsValuesLoading) {
       void setParsedDimensionsToStorage(dimensionsFromServer || []);
@@ -44,20 +50,45 @@ export const AvailabilityModifier = ({
 
   return (
     <div className={clsx("relative h-full w-full", className)}>
-      <div className="mt-4">
-        <h2 className={clsx(headerClassName, "mb-4")}>{`Time Window`}</h2>
-        <Input
-          label="Time Travel"
-          name="time-travel"
-          type={"datetime-local"}
-          value={activeModifiers.timeTravel}
-          onChange={(timeTravel) =>
-            setActiveModifiers({
-              ...activeModifiers,
-              timeTravel,
-            })
-          }
-        />
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="">
+          <h2 className={clsx(headerClassName, "mb-4")}>{`Time Window`}</h2>
+          <Input
+            label="Time Travel"
+            name="time-travel"
+            type={"datetime-local"}
+            disabled={!user.canTimeTravel}
+            value={activeModifiers.timeTravel}
+            onChange={(timeTravel) =>
+              setActiveModifiers({
+                ...activeModifiers,
+                timeTravel,
+              })
+            }
+          />
+        </div>
+        <div>
+          <h2 className={clsx(headerClassName, "mb-4")}>{`Language`}</h2>
+          <LanguageCombobox
+            selectedValue={activeModifiers.language}
+            additionalOptions={
+              account?.config.default_language
+                ? [
+                    {
+                      value: account?.config.default_language,
+                      label: account?.config.default_language,
+                    },
+                  ]
+                : undefined
+            }
+            onChange={(opt) =>
+              setActiveModifiers({
+                ...activeModifiers,
+                language: opt?.value || "",
+              })
+            }
+          />
+        </div>
       </div>
       <div className="mt-4">
         <h2 className={clsx(headerClassName, "mb-1")}>{`Audience`}</h2>

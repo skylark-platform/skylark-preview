@@ -7,6 +7,7 @@ interface InputProps {
   type: React.HTMLInputTypeAttribute;
   value: string;
   className?: string;
+  disabled?: boolean;
   onChange: (value: string) => void;
 }
 
@@ -16,6 +17,7 @@ export const Input = ({
   type,
   value,
   className,
+  disabled,
   onChange,
 }: InputProps) => (
   <div className={clsx("relative mt-2 w-full", className)}>
@@ -31,6 +33,7 @@ export const Input = ({
       name={name}
       type={type}
       value={value}
+      disabled={disabled}
       onChange={(e) => onChange(e.target.value)}
     />
   </div>

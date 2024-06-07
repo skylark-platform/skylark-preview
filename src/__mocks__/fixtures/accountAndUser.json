@@ -1,0 +1,26 @@
+{
+  "data": {
+    "user": {
+      "account": "565m45p57zeqjng25dyxgvorwy",
+      "role": "ADMIN",
+      "permissions": [
+        "READ",
+        "WRITE",
+        "IGNORE_AVAILABILITY",
+        "TIME_TRAVEL",
+        "ACCOUNT_SETUP",
+        "SELF_CONFIG",
+        "KEY_MANAGEMENT"
+      ]
+    },
+    "account": {
+      "config": {
+        "raise_uid_exception": null,
+        "draft_update": null,
+        "default_language": "en-GB"
+      },
+      "account_id": "565m45p57zeqjng25dyxgvorwy",
+      "skylark_version": "240530.21.3"
+    }
+  }
+}

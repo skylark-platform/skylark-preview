@@ -7,6 +7,7 @@ import {
 export const convertModifiersToRules = ({
   dimensions,
   timeTravel,
+  language,
   uri,
   apiKey,
   settings,
@@ -38,6 +39,15 @@ export const convertModifiersToRules = ({
       value: timeTravel,
     };
     requestHeaders.push(timeTravelRule);
+  }
+
+  if (language) {
+    const languageRule: chrome.declarativeNetRequest.ModifyHeaderInfo = {
+      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      header: "x-language",
+      value: language,
+    };
+    requestHeaders.push(languageRule);
   }
 
   if (settings.sendIgnoreAvailabilityHeader) {

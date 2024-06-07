@@ -128,7 +128,6 @@ export const Popup = () => {
       (!hasCreds || credsAreInvalid) &&
       tab !== PopupTab.Auth
     ) {
-      console.log({ creds, hasCreds, credsAreInvalid, isConnected, isLoading });
       setTab(PopupTab.Auth);
       // If the credentials are missing, disable
       void sendExtensionMessage({
@@ -196,6 +195,7 @@ export const Popup = () => {
                   settings={settings}
                   updateSettings={setSettings}
                   className="mt-4 px-4"
+                  skylarkCreds={creds}
                 />
               </>
             )}

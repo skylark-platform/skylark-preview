@@ -6,6 +6,7 @@ import { convertModifiersToRules } from "../../lib/converters";
 
 const modifiers: ExtensionMessageValueHeaders = {
   timeTravel: "to-tomorrow",
+  language: "en-GB",
   dimensions: {
     "customer-type": "premium",
     "device-type": "pc",
@@ -51,6 +52,7 @@ describe("convertModifiersToRules", () => {
               modifiers.dimensions["customer-type"],
             "x-sl-dimension-device-type": modifiers.dimensions["device-type"],
             "x-time-travel": modifiers.timeTravel,
+            "x-language": modifiers.language,
             "x-ignore-availability": "false",
             "x-bypass-cache": "1",
             Authorization: credentials.apiKey,

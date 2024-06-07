@@ -1,13 +1,15 @@
 import clsx from "clsx";
 import { SwitchWithLabel } from "./switch";
-import { ExtensionSettings } from "../interfaces";
+import { ExtensionSettings, SkylarkCredentials } from "../interfaces";
 import { Dispatch, ReactNode, SetStateAction } from "react";
-import { FiInfo } from "react-icons/fi";
 import { EXTENSION_SETTINGS_DEFAULTS } from "../constants";
+import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
+import { Tooltip } from "./tooltip";
 
 interface SettingsProps {
   className: string;
   settings: ExtensionSettings;
+  skylarkCreds: SkylarkCredentials;
   updateSettings: Dispatch<SetStateAction<ExtensionSettings | null>>;
 }
 
@@ -41,6 +43,7 @@ const SettingToggle = ({
   desc,
   screenReaderDesc,
   tooltip,
+  disabled,
   link,
 }: {
   active: boolean;
@@ -48,6 +51,7 @@ const SettingToggle = ({
   screenReaderDesc: string;
   desc: string;
   tooltip?: ReactNode;
+  disabled?: boolean;
   link?: { text: string; href: string };
 }) => (
   <div className="flex items-center space-x-2">
@@ -58,16 +62,10 @@ const SettingToggle = ({
       small
       grayscale
       label={desc}
+      disabled={disabled}
     />
     <div className="flex items-center space-x-1">
-      {tooltip && (
-        <div className="group relative py-2 hover:cursor-pointer">
-          <FiInfo className="h-3.5 w-3.5 transition-colors group-hover:text-brand-primary" />
-          <div className="absolute -left-40 bottom-7 z-50 hidden w-80 space-y-2 rounded-lg bg-white p-4 text-xs shadow-md shadow-gray-400 group-hover:block">
-            {tooltip}
-          </div>
-        </div>
-      )}
+      {tooltip && <Tooltip tooltip={tooltip} />}
       {link && (
         <a
           href={link.href}
@@ -85,6 +83,7 @@ const SettingToggle = ({
 
 export const Settings = ({
   className,
+  skylarkCreds,
   settings: {
     enabledOnSkylarkUI,
     sendIgnoreAvailabilityHeader,
@@ -93,6 +92,10 @@ export const Settings = ({
   },
   updateSettings,
 }: SettingsProps) => {
+  const { user } = useConnectedToSkylark(skylarkCreds, {
+    withInterval: false,
+  });
+
   return (
     <div className={className}>
       {/* <h2 className="mb-1 font-heading text-lg font-bold">{`Settings`}</h2> */}
@@ -121,6 +124,7 @@ export const Settings = ({
       />
       <SettingToggle
         active={sendDraftHeader}
+        disabled={!user.canReadDrafts}
         toggleEnabled={() => {
           updateSettings((prev) => ({
             ...(prev || EXTENSION_SETTINGS_DEFAULTS),
@@ -154,6 +158,12 @@ export const Settings = ({
               meaning any Availability rules are ignored and all objects are
               returned.
             </p>
+            {!user.canReadDrafts && (
+              <p className="font-medium text-error">
+                {`Requires \`WRITE\` ${user.canIgnoreAvailability ? "" : "& `IGNORE_AVAILABILITY`"} permissions which you
+                do not have.`}
+              </p>
+            )}
           </>
         }
       />
@@ -197,6 +207,7 @@ export const Settings = ({
             sendIgnoreAvailabilityHeader: !sendIgnoreAvailabilityHeader,
           }))
         }
+        disabled={!user.canIgnoreAvailability}
         desc={`Include the Ignore Availability header (Advanced)`}
         screenReaderDesc="Toggle the extension sending the x-ignore-availability header as false"
         tooltip={
@@ -215,6 +226,11 @@ export const Settings = ({
               However, if your app has queries that utilise ignore availability,
               you may want to disable sending this header.
             </p>
+            {!user.canIgnoreAvailability && (
+              <p className="font-medium text-error">
+                Requires `IGNORE_AVAILABILITY` permission which you do not have.
+              </p>
+            )}
             <Link
               href="https://docs.skylarkplatform.com/docs/ignoring-availability"
               text="Documentation"

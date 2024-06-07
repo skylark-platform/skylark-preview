@@ -1,6 +1,7 @@
 import gql from "graphql-tag";
 import { jsonToGraphQLQuery } from "json-to-graphql-query";
 import { SkylarkGraphQLAvailabilityDimension } from "../interfaces";
+import { wrapQueryName } from "./queries";
 
 interface DimensionWithNextToken {
   dimension: SkylarkGraphQLAvailabilityDimension;
@@ -38,7 +39,7 @@ export const createGetAvailabilityDimensionValues = (
 
   const query = {
     query: {
-      __name: "LIST_AVAILABILITY_DIMENSION_VALUES",
+      __name: wrapQueryName("LIST_AVAILABILITY_DIMENSION_VALUES"),
       ...dimensionsToCreate.reduce((acc, { dimension, nextToken }) => {
         const queryAlias = createGetAvailabilityDimensionValuesQueryAlias(
           dimension.uid,
