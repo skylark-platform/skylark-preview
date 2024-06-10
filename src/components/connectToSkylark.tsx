@@ -22,6 +22,31 @@ interface ConnectToSkylarkProps {
   onUpdate: (creds?: SkylarkCredentials) => void;
 }
 
+const readAutoconnectPath = (
+  path: string,
+): { uri: string; token: string } | null => {
+  const isPath = path.includes("/connect") || path.includes("/beta/connect");
+  if (!isPath) {
+    return null;
+  }
+  const splitArr = path.split("?")?.[1]?.split("&");
+  if (!splitArr || splitArr.length < 2) {
+    return null;
+  }
+  const uri = splitArr
+    .find((val) => val.startsWith("uri="))
+    ?.replace("uri=", "");
+  const token = splitArr
+    .find((val) => val.startsWith("apikey="))
+    ?.replace("apikey=", "");
+
+  if (uri && token) {
+    return { uri, token };
+  }
+
+  return null;
+};
+
 export const ConnectToSkylark = ({
   variant,
   className,
@@ -122,7 +147,7 @@ export const ConnectToSkylark = ({
   ];
 
   return (
-    <div className={clsx("flex w-full flex-col", className)}>
+    <div className={clsx("flex w-full flex-col text-xs", className)}>
       <h2 className="mb-2 mt-4 font-heading text-lg font-bold">
         {variant === "unauthenticated"
           ? `Enter your Skylark credentials`
@@ -134,7 +159,17 @@ export const ConnectToSkylark = ({
         name="skylark-api-url"
         type={"string"}
         value={creds.uri}
-        onChange={(uri) => handleChange({ uri })}
+        onChange={(uri) => {
+          const autoconnectCreds = readAutoconnectPath(uri);
+          if (autoconnectCreds) {
+            handleChange({
+              ...autoconnectCreds,
+              apiKey: autoconnectCreds.token,
+            });
+            return;
+          }
+          handleChange({ uri });
+        }}
       />
       <Input
         label="API Key"

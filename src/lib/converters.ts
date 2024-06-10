@@ -4,6 +4,10 @@ import {
   SkylarkCredentials,
 } from "../interfaces";
 
+const setOperation = "SET" as chrome.declarativeNetRequest.HeaderOperation.SET;
+const modifyHeadersActionType =
+  "modifyHeaders" as chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS;
+
 export const convertModifiersToRules = ({
   dimensions,
   timeTravel,
@@ -27,14 +31,14 @@ export const convertModifiersToRules = ({
     Object.entries(dimensions)
       .filter(([, value]) => value)
       .map(([dimension, value]) => ({
-        operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+        operation: setOperation,
         header: `x-sl-dimension-${dimension}`,
         value,
       }));
 
   if (timeTravel) {
     const timeTravelRule: chrome.declarativeNetRequest.ModifyHeaderInfo = {
-      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      operation: setOperation,
       header: "x-time-travel",
       value: timeTravel,
     };
@@ -43,7 +47,7 @@ export const convertModifiersToRules = ({
 
   if (language) {
     const languageRule: chrome.declarativeNetRequest.ModifyHeaderInfo = {
-      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      operation: setOperation,
       header: "x-language",
       value: language,
     };
@@ -52,7 +56,7 @@ export const convertModifiersToRules = ({
 
   if (settings.sendIgnoreAvailabilityHeader) {
     requestHeaders.push({
-      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      operation: setOperation,
       header: "x-ignore-availability",
       value: "false",
     });
@@ -60,7 +64,7 @@ export const convertModifiersToRules = ({
 
   if (settings.sendDraftHeader) {
     requestHeaders.push({
-      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      operation: setOperation,
       header: "x-draft",
       value: "true",
     });
@@ -68,21 +72,21 @@ export const convertModifiersToRules = ({
 
   // Always bypass cache
   requestHeaders.push({
-    operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+    operation: setOperation,
     header: "x-bypass-cache",
     value: "1",
   });
 
   // Always overwrite the API key so that the user can supply an admin (for time-travel) one but their app can use a readonly one
   requestHeaders.push({
-    operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+    operation: setOperation,
     header: "Authorization",
     value: apiKey,
   });
 
   // Send a marker header so its easy to identify when the Extension is intercepting
   requestHeaders.push({
-    operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+    operation: setOperation,
     header: "x-skylark-preview-enabled",
     value: "true",
   });
@@ -92,7 +96,7 @@ export const convertModifiersToRules = ({
       id: 1,
       priority: 1,
       action: {
-        type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+        type: modifyHeadersActionType,
         requestHeaders,
       },
       condition: {

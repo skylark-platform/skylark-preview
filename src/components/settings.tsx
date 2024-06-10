@@ -54,7 +54,7 @@ const SettingToggle = ({
   disabled?: boolean;
   link?: { text: string; href: string };
 }) => (
-  <div className="flex items-center space-x-2">
+  <div className="flex items-center space-x-2 text-xs">
     <SwitchWithLabel
       active={active}
       toggleEnabled={toggleEnabled}

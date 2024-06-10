@@ -12,7 +12,7 @@ import {
   PopupTab,
   SkylarkCredentials,
 } from "./interfaces";
-import { sendExtensionMessage } from "./lib/utils";
+import { hasProperty, sendExtensionMessage } from "./lib/utils";
 import { ConnectToSkylark } from "./components/connectToSkylark";
 import { DisabledOverlay } from "./components/disabledOverlay";
 import {
@@ -88,22 +88,31 @@ export const Popup = () => {
   }, []);
 
   const [isHeadersUpdating, setIsHeadersUpdating] = useState(false);
+  const [updatingHeadersError, setUpdatingHeadersError] = useState<string>();
 
   const updateHeadersAndSettings = async (
     modifiers: ExtensionMessageValueHeaders,
     settings: ExtensionSettings,
   ) => {
     setIsHeadersUpdating(true);
+    setUpdatingHeadersError(undefined);
 
-    await sendExtensionMessage({
-      type: ExtensionMessageType.UpdateSettings,
-      value: settings,
-    });
+    try {
+      await sendExtensionMessage({
+        type: ExtensionMessageType.UpdateSettings,
+        value: settings,
+      });
 
-    await sendExtensionMessage({
-      type: ExtensionMessageType.UpdateHeaders,
-      value: modifiers,
-    });
+      await sendExtensionMessage({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: modifiers,
+      });
+    } catch (err) {
+      console.error(err);
+      setUpdatingHeadersError(
+        `Error updating headers${hasProperty(err, "message") ? `: ${err?.message}` : ""}`,
+      );
+    }
 
     setIsHeadersUpdating(false);
   };
@@ -137,7 +146,7 @@ export const Popup = () => {
   }, [creds, tab, isConnected, isLoading]);
 
   return (
-    <div className="font-body relative flex min-h-[600px] flex-grow flex-col items-start justify-start bg-white">
+    <div className="font-body relative flex min-h-[600px] flex-grow flex-col items-start justify-start bg-white font-sans">
       <div className="fixed left-0 right-0 z-10 h-16">
         <Header
           credentialsAdded={!!creds?.apiKey && !!creds?.uri}
@@ -236,6 +245,7 @@ export const Popup = () => {
             extensionEnabled &&
             (isHeadersUpdating || activeModifiers !== debouncedActiveModifiers)
           }
+          updatingHeadersError={updatingHeadersError}
         />
       </div>
     </div>

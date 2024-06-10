@@ -62,9 +62,11 @@ describe("convertModifiersToRules", () => {
             operation: "SET",
             value,
           })),
+          type: "modifyHeaders",
         },
         condition: {
           resourceTypes: ["XMLHttpRequest"],
+          excludedInitiatorDomains: undefined,
           urlFilter: credentials.uri,
         },
         id: 1,
