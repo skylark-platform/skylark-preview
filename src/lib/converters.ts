@@ -4,7 +4,7 @@ import {
   SkylarkCredentials,
 } from "../interfaces";
 
-const setOperation = "SET" as chrome.declarativeNetRequest.HeaderOperation.SET;
+const setOperation = "set" as chrome.declarativeNetRequest.HeaderOperation.SET;
 const modifyHeadersActionType =
   "modifyHeaders" as chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS;
 

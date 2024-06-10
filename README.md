@@ -110,7 +110,7 @@ Using `yarn dev` means that Vite will be running with Hot Module Reload. Therefo
 ### Building
 
 ```bash
-yarn build
+yarn build:all
 ```
 
 ### Publish to Chrome Web Store

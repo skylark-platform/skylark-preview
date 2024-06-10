@@ -5,9 +5,9 @@
   "version": "1.5.0",
   "type": "module",
   "scripts": {
-    "dev:chrome": "vite",
+    "dev:chrome": "BROWSER=chrome vite",
     "dev:firefox": "BROWSER=firefox vite build --watch",
-    "build:chrome": "tsc && vite build",
+    "build:chrome": "tsc && BROWSER=chrome vite build",
     "build:firefox": "tsc && BROWSER=firefox vite build",
     "build:all": "concurrently -n \"chrome,firefox\" \"yarn build:chrome\" \"yarn build:firefox\"",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0 .",

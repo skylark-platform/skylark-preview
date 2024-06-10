@@ -59,7 +59,7 @@ describe("convertModifiersToRules", () => {
             "x-skylark-preview-enabled": "true",
           }).map(([header, value]) => ({
             header,
-            operation: "SET",
+            operation: "set",
             value,
           })),
           type: "modifyHeaders",
