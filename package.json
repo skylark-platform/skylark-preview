@@ -10,7 +10,8 @@
     "build:chrome": "tsc && BROWSER=chrome vite build",
     "build:firefox": "tsc && BROWSER=firefox vite build",
     "build:all": "concurrently -n \"chrome,firefox\" \"yarn build:chrome\" \"yarn build:firefox\"",
-    "zip:all": "concurrently -n \"chrome.zip,firefox.zip\" \"cd dist && zip -r chrome.zip chrome/\" \"cd dist && zip -r firefox.zip firefox/\"",
+    "zip:all": "concurrently -n \"chrome.zip,firefox.zip\" \"cd dist && zip -r chrome.zip chrome/\" \"cd dist/firefox && zip -r -FS ../firefox.zip *\"",
+    "zip:codebase": "zip -r -FS ./dist/codebase.zip * --exclude '*.git*' --exclude 'node_modules/**'",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0 .",
     "preview": "vite preview",
     "test": "vitest --config vitest.config.ts"
