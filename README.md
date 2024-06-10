@@ -116,7 +116,7 @@ yarn build:all
 ### Publish to Chrome Web Store
 
 1. Build the extension
-2. Zip up the `dist` directory (`zip -r preview.zip ./dist/chrome/`)
+2. Zip up the `dist` directory (`yarn zip:all` or `zip -r preview.zip ./dist/chrome/`)
 3. Follow the instructions on Google to submit it to the Web Store: https://developer.chrome.com/docs/webstore/publish/
 
 ## Contributing

@@ -17,8 +17,12 @@ jobs:
       - name: Build Staging
         if: ${{ github.ref_name != 'main' }}
         run: yarn build:all --mode staging
-      - run: zip -r preview-extension.zip ./dist/chrome
+      - run: yarn zip:all
       - uses: actions/upload-artifact@v4
         with:
-          name: preview-extension-${{ env.now }}
-          path: preview-extension.zip
+          name: preview-extension-chrome-${{ env.now }}
+          path: dist/chrome.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: preview-extension-firefox-${{ env.now }}
+          path: dist/firefox.zip
