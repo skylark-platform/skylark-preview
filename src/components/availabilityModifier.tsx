@@ -70,6 +70,7 @@ export const AvailabilityModifier = ({
         <div>
           <h2 className={clsx(headerClassName, "mb-4")}>{`Language`}</h2>
           <LanguageCombobox
+            name="language-input"
             selectedValue={activeModifiers.language}
             additionalOptions={
               account?.config.default_language
@@ -111,6 +112,7 @@ export const AvailabilityModifier = ({
                 <div className="my-2 w-full" key={dimension.uid}>
                   <DimensionCombobox
                     key={dimension.uid}
+                    name={`dimension-${dimension.slug}-input`}
                     label={dimension.title || dimension.slug}
                     options={options}
                     selectedValue={activeModifiers.dimensions[dimension.slug]}

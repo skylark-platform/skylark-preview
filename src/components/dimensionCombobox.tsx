@@ -10,6 +10,7 @@ export interface ComboboxOption {
 
 export interface DimensionComboboxProps {
   label: string;
+  name: string;
   selectedValue: ComboboxOption["value"];
   options: ComboboxOption[];
   onChange: (value?: ComboboxOption) => void;
@@ -17,6 +18,7 @@ export interface DimensionComboboxProps {
 
 export const DimensionCombobox = ({
   label,
+  name,
   selectedValue,
   options,
   onChange,
@@ -44,6 +46,8 @@ export const DimensionCombobox = ({
 
           <Combobox.Button as="div" className="">
             <Combobox.Input
+              name={name}
+              autoComplete="off"
               className="w-full border-none py-2 pl-4 pr-10 text-sm leading-5 text-gray-800 focus:ring-0"
               displayValue={(option: ComboboxOption) => option.label}
               onChange={(event) => setQuery(event.target.value)}

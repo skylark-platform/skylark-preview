@@ -34,6 +34,7 @@ export const Input = ({
       type={type}
       value={value}
       disabled={disabled}
+      autoComplete="off"
       onChange={(e) => onChange(e.target.value)}
     />
   </div>
