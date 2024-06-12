@@ -39,7 +39,7 @@ export const DimensionCombobox = ({
   return (
     <Combobox value={selectedOption || ""} onChange={onChange}>
       <div className="relative mt-1">
-        <div className="relative w-full cursor-default rounded-lg border border-gray-200 py-1 text-left text-sm text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+        <div className="relative w-full cursor-default rounded-lg border border-gray-200 py-1 text-left text-base text-gray-500 focus-within:ring-1 focus-within:ring-brand-primary sm:text-base">
           <Combobox.Label className="absolute left-2 top-0 -translate-y-1/2 transform text-xs font-medium uppercase text-manatee-500 md:left-3">
             <span className="bg-white px-2">{label}</span>
           </Combobox.Label>
@@ -48,7 +48,7 @@ export const DimensionCombobox = ({
             <Combobox.Input
               name={name}
               autoComplete="off"
-              className="w-full border-none py-2 pl-4 pr-10 text-sm leading-5 text-gray-800 focus:ring-0"
+              className="w-full border-none py-2 pl-4 pr-10 text-base leading-5 text-gray-800 focus:ring-0"
               displayValue={(option: ComboboxOption) => option.label}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -75,7 +75,7 @@ export const DimensionCombobox = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Combobox.Options className="absolute z-10 mt-1 max-h-24 w-full overflow-auto rounded-md bg-white py-0.5 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <Combobox.Options className="absolute z-10 mt-1 max-h-24 w-full overflow-auto rounded-md bg-white py-0.5 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-base">
             {filteredOptions.length === 0 && query !== "" ? (
               <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
                 {`Nothing found.`}
@@ -104,7 +104,7 @@ export const DimensionCombobox = ({
                       {selected ? (
                         <span
                           className={clsx(
-                            "absolute inset-y-0 left-0 top-0 flex items-center pl-1 text-lg",
+                            "absolute inset-y-0 left-0 top-0 flex items-center pl-1 text-xl",
                             active ? "text-black" : "text-brand-primary",
                           )}
                         >

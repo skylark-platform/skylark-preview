@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { useAvailabilityDimensionsWithValues } from "../hooks/useAvailabilityDimensionsValues";
 import {
@@ -7,10 +7,16 @@ import {
   SkylarkCredentials,
 } from "../interfaces";
 import { DimensionCombobox } from "./dimensionCombobox";
-import { Input } from "./input";
 import { setParsedDimensionsToStorage } from "../lib/storage";
 import { LanguageCombobox } from "./languageCombobox";
 import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
+// import { DateType } from "react-tailwindcss-datepicker";
+import { DateTimePicker } from "./dateTimePicker";
+
+// type ValuePiece = Date | null;
+
+// type Value = ValuePiece | [ValuePiece, ValuePiece];
+// import DateTimePicker from "react-datetime-picker";
 
 interface AvailabilityModifierProps {
   className: string;
@@ -21,7 +27,7 @@ interface AvailabilityModifierProps {
   setActiveModifiers: (m: ExtensionMessageValueHeaders) => void;
 }
 
-const headerClassName = "font-heading text-lg font-bold";
+const headerClassName = "font-heading text-xl font-bold";
 
 export const AvailabilityModifier = ({
   className,
@@ -33,7 +39,7 @@ export const AvailabilityModifier = ({
   const { dimensions: dimensionsFromServer, isDimensionsValuesLoading } =
     useAvailabilityDimensionsWithValues(skylarkCreds.uri, skylarkCreds.apiKey);
 
-  const { account, user } = useConnectedToSkylark(skylarkCreds, {
+  const { user, account } = useConnectedToSkylark(skylarkCreds, {
     withInterval: false,
   });
 
@@ -48,12 +54,16 @@ export const AvailabilityModifier = ({
       ? dimensionsFromStorage
       : dimensionsFromServer;
 
+  const [value, setValue] = useState<string>("");
+
+  console.log({ value });
+
   return (
     <div className={clsx("relative h-full w-full", className)}>
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="mt-4 grid grid-cols-2 gap-4">
         <div className="">
-          <h2 className={clsx(headerClassName, "mb-4")}>{`Time Window`}</h2>
-          <Input
+          <h2 className={clsx(headerClassName, "mb-3")}>{`Time Window`}</h2>
+          {/* <Input
             label="Time Travel"
             name="time-travel"
             type={"datetime-local"}
@@ -65,10 +75,16 @@ export const AvailabilityModifier = ({
                 timeTravel,
               })
             }
+          /> */}
+          <DateTimePicker
+            name="time-travel"
+            disabled={!user.canTimeTravel}
+            value={value}
+            onChange={setValue}
           />
         </div>
         <div>
-          <h2 className={clsx(headerClassName, "mb-4")}>{`Language`}</h2>
+          <h2 className={clsx(headerClassName, "mb-3")}>{`Language`}</h2>
           <LanguageCombobox
             name="language-input"
             selectedValue={activeModifiers.language}
@@ -91,9 +107,9 @@ export const AvailabilityModifier = ({
           />
         </div>
       </div>
-      <div className="mt-4 text-xs">
-        <h2 className={clsx(headerClassName, "mb-1")}>{`Audience`}</h2>
-        <div className="grid grid-cols-2 gap-2">
+      <div className="mt-4 text-sm">
+        <h2 className={clsx(headerClassName, "mb-2")}>{`Audience`}</h2>
+        <div className="grid grid-cols-2 gap-4">
           {isDimensionsValuesLoading &&
             !dimensionsFromStorage &&
             (dimensions || Array.from({ length: 2 })).map((_, i) => (
@@ -109,7 +125,7 @@ export const AvailabilityModifier = ({
                 label: title || slug,
               }));
               return (
-                <div className="my-2 w-full" key={dimension.uid}>
+                <div className="w-full" key={dimension.uid}>
                   <DimensionCombobox
                     key={dimension.uid}
                     name={`dimension-${dimension.slug}-input`}

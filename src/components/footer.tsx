@@ -18,7 +18,7 @@ export const Footer = ({
   isHeadersUpdating,
   updatingHeadersError,
 }: FooterProps) => (
-  <footer className="relative flex h-14 w-full items-center justify-start bg-manatee-200 px-4 py-4 text-xs">
+  <footer className="relative flex h-14 w-full items-center justify-start bg-manatee-200 px-4 py-4 text-sm">
     <Button
       className="mr-4"
       disabled={isHeadersUpdating}

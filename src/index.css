@@ -14,3 +14,54 @@
 body {
   margin: 0;
 }
+
+/* react-tailwindcss-datepicker overrides start */
+/* These match whatever classes existed when building this feature, they may change */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: none;
+}
+
+.skylark-preview-date-picker div.px-0\.5.sm\:px-2.mt-0\.5.min-h-\[285px\] {
+  min-height: auto !important;
+}
+
+.skylark-preview-date-picker
+  div.flex.items-center.space-x-1\.5.border.border-gray-300.dark\:border-gray-700.rounded-md.px-2.py-1\.5 {
+  @apply px-1 py-0.5 !important;
+}
+
+.skylark-preview-date-picker
+  button.transition-all.duration-300.px-3.py-3.uppercase {
+  @apply py-2 !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+.skylark-preview-date-picker input.focus:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Specifically the preset dates */
+.skylark-preview-date-picker
+  div.border-gray-300.bg-white.dark\:bg-slate-800.dark\:border-slate-600
+  > div {
+  flex-direction: row !important;
+}
+
+.skylark-preview-date-picker
+  div.border-gray-300.bg-white.dark\:bg-slate-800.dark\:border-slate-600
+  > div
+  ul {
+  flex-direction: column !important;
+  width: 100% !important;
+}
+
+.skylark-preview-date-picker
+  div.border-gray-300.bg-white.dark\:bg-slate-800.dark\:border-slate-600
+  > div
+  ul
+  > li {
+  width: 100% !important;
+}
+/* react-tailwindcss-datepicker overrides end */

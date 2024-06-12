@@ -147,8 +147,8 @@ export const ConnectToSkylark = ({
   ];
 
   return (
-    <div className={clsx("flex w-full flex-col text-xs", className)}>
-      <h2 className="mb-2 mt-4 font-heading text-lg font-bold">
+    <div className={clsx("flex w-full flex-col text-sm", className)}>
+      <h2 className="mb-2 mt-4 font-heading text-xl font-bold">
         {variant === "unauthenticated"
           ? `Enter your Skylark credentials`
           : `Skylark Account`}
@@ -194,11 +194,11 @@ export const ConnectToSkylark = ({
                   <p className="mt-4 font-medium">{title}:</p>
                   <ul className="mt-1">
                     {info.map(({ text, enabled, requiredPermissions }) => (
-                      <li key={text} className="flex h-6 items-center text-xs">
+                      <li key={text} className="flex h-6 items-center text-sm">
                         {enabled ? (
-                          <FiCheck className="text-lg text-success" />
+                          <FiCheck className="text-xl text-success" />
                         ) : (
-                          <FiX className="text-xl text-error" />
+                          <FiX className="text-2xl text-error" />
                         )}
                         <span className="mx-1">{text}</span>
                         <Tooltip

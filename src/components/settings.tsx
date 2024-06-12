@@ -54,7 +54,7 @@ const SettingToggle = ({
   disabled?: boolean;
   link?: { text: string; href: string };
 }) => (
-  <div className="flex items-center space-x-2 text-xs">
+  <div className="flex items-center space-x-2 text-sm">
     <SwitchWithLabel
       active={active}
       toggleEnabled={toggleEnabled}
@@ -98,7 +98,7 @@ export const Settings = ({
 
   return (
     <div className={className}>
-      {/* <h2 className="mb-1 font-heading text-lg font-bold">{`Settings`}</h2> */}
+      {/* <h2 className="mb-1 font-heading text-xl font-bold">{`Settings`}</h2> */}
       <SettingToggle
         active={showStatusOverlay}
         toggleEnabled={() =>
