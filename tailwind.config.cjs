@@ -12,7 +12,12 @@ const formPlugin = require("@tailwindcss/forms");
 
 export default {
   important: true,
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: "selector",
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
+  ],
   theme: {
     extend: {
       zIndex: {
@@ -84,20 +89,20 @@ export default {
         "7xl": "1280px",
       },
       fontSize: {
-        xxs: ["10px", { lineHeight: "14px" }],
-        xs: ["12px", { lineHeight: "16px" }],
-        sm: ["14px", { lineHeight: "20px" }],
-        base: ["16px", { lineHeight: "24px" }],
-        lg: ["18px", { lineHeight: "28px" }],
-        xl: ["20px", { lineHeight: "28px" }],
-        "2xl": ["24px", { lineHeight: "32px" }],
-        "3xl": ["30px", { lineHeight: "36px" }],
-        "4xl": ["36px", { lineHeight: "36px" }],
-        "5xl": ["48px", { lineHeight: "1" }],
-        "6xl": ["60px", { lineHeight: "1" }],
-        "7xl": ["72px", { lineHeight: "1" }],
-        "8xl": ["96px", { lineHeight: "1" }],
-        "9xl": ["144px", { lineHeight: "1" }],
+        xxs: ["8px", { lineHeight: "12px" }],
+        xs: ["10px", { lineHeight: "14px" }],
+        sm: ["12px", { lineHeight: "16px" }],
+        base: ["14px", { lineHeight: "20px" }],
+        lg: ["16px", { lineHeight: "24px" }],
+        xl: ["18px", { lineHeight: "28px" }],
+        "2xl": ["20px", { lineHeight: "28px" }],
+        "3xl": ["24px", { lineHeight: "32px" }],
+        "4xl": ["30px", { lineHeight: "36px" }],
+        "5xl": ["36px", { lineHeight: "36px" }],
+        "6xl": ["48px", { lineHeight: "1" }],
+        "7xl": ["60px", { lineHeight: "1" }],
+        "8xl": ["72px", { lineHeight: "1" }],
+        "9xl": ["96px", { lineHeight: "1" }],
       },
       lineHeight: {
         none: "1",

@@ -6,6 +6,7 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
+import dayjs from "dayjs";
 
 import App from "../app";
 import { ExtensionStorageKeys } from "../constants";
@@ -84,15 +85,21 @@ it("changes an active dimension and saves to storage", async () => {
   );
 });
 
-it("changes the time travel and saves to storage", async () => {
+it("changes the time travel time and saves to storage", async () => {
   await act(async () => render(<App />));
 
-  const timeTravelInput = screen.getByLabelText("time-travel");
+  await waitFor(() => {
+    expect(screen.getByText("Refresh")).toBeInTheDocument();
+  });
+
+  const withinDateTimePicker = within(screen.getByTestId("datetime-picker"));
+
+  const timeTravelInput = withinDateTimePicker.getByLabelText("Time");
 
   expect(timeTravelInput).toBeInTheDocument();
 
   await fireEvent.change(timeTravelInput, {
-    target: { value: "2017-06-01T08:30" },
+    target: { value: "08:30:00" },
   });
 
   await waitFor(() =>
@@ -108,7 +115,53 @@ it("changes the time travel and saves to storage", async () => {
         type: ExtensionMessageType.UpdateHeaders,
         value: {
           dimensions: {},
-          timeTravel: "2017-06-01T08:30",
+          timeTravel: dayjs()
+            .hour(8)
+            .minute(30)
+            .second(0)
+            .millisecond(0)
+            .toISOString(),
+          language: "",
+        },
+      }),
+    { timeout: 5000 },
+  );
+});
+
+it("changes the time travel date and saves to storage", async () => {
+  await act(async () => render(<App />));
+
+  await waitFor(() => {
+    expect(screen.getByText("Refresh")).toBeInTheDocument();
+  });
+
+  const withinDateTimePicker = within(screen.getByTestId("datetime-picker"));
+
+  const timeTravelInput = withinDateTimePicker.getByLabelText("Date");
+
+  expect(timeTravelInput).toBeInTheDocument();
+
+  await fireEvent.click(timeTravelInput);
+  await fireEvent.click(screen.getByText("In a week"));
+
+  await waitFor(() =>
+    expect(chrome.runtime.sendMessage).toBeCalledWith({
+      type: ExtensionMessageType.UpdateSettings,
+      value: expect.any(Object),
+    }),
+  );
+
+  await waitFor(
+    () =>
+      expect(chrome.runtime.sendMessage).toBeCalledWith({
+        type: ExtensionMessageType.UpdateHeaders,
+        value: {
+          dimensions: {},
+          timeTravel: dayjs()
+            .add(1, "week")
+            .second(0)
+            .millisecond(0)
+            .toISOString(),
           language: "",
         },
       }),
