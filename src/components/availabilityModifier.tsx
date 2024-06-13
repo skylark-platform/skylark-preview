@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import clsx from "clsx";
 import { useAvailabilityDimensionsWithValues } from "../hooks/useAvailabilityDimensionsValues";
 import {
@@ -10,13 +10,7 @@ import { DimensionCombobox } from "./dimensionCombobox";
 import { setParsedDimensionsToStorage } from "../lib/storage";
 import { LanguageCombobox } from "./languageCombobox";
 import { useConnectedToSkylark } from "../hooks/useConnectedToSkylark";
-// import { DateType } from "react-tailwindcss-datepicker";
 import { DateTimePicker } from "./dateTimePicker";
-
-// type ValuePiece = Date | null;
-
-// type Value = ValuePiece | [ValuePiece, ValuePiece];
-// import DateTimePicker from "react-datetime-picker";
 
 interface AvailabilityModifierProps {
   className: string;
@@ -54,19 +48,13 @@ export const AvailabilityModifier = ({
       ? dimensionsFromStorage
       : dimensionsFromServer;
 
-  const [value, setValue] = useState<string>("");
-
-  console.log({ value });
-
   return (
     <div className={clsx("relative h-full w-full", className)}>
       <div className="mt-4 grid grid-cols-2 gap-4">
         <div className="">
           <h2 className={clsx(headerClassName, "mb-3")}>{`Time Window`}</h2>
-          {/* <Input
-            label="Time Travel"
+          <DateTimePicker
             name="time-travel"
-            type={"datetime-local"}
             disabled={!user.canTimeTravel}
             value={activeModifiers.timeTravel}
             onChange={(timeTravel) =>
@@ -75,12 +63,6 @@ export const AvailabilityModifier = ({
                 timeTravel,
               })
             }
-          /> */}
-          <DateTimePicker
-            name="time-travel"
-            disabled={!user.canTimeTravel}
-            value={value}
-            onChange={setValue}
           />
         </div>
         <div>

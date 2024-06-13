@@ -64,4 +64,10 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   > li {
   width: 100% !important;
 }
+
+.skylark-preview-date-picker .text-blue-600,
+.skylark-preview-date-picker .text-blue-500 {
+  color: #226dff !important;
+}
+
 /* react-tailwindcss-datepicker overrides end */

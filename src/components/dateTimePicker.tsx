@@ -15,6 +15,7 @@ interface DateTimePickerProps {
 
 const in1Day = dayjs().add(1, "day");
 const in1Week = dayjs().add(1, "week");
+const in2Weeks = dayjs().add(2, "week");
 const in1Month = dayjs().add(1, "month");
 const in3Months = dayjs().add(3, "month");
 const in6Months = dayjs().add(6, "month");
@@ -23,6 +24,7 @@ const in1Year = dayjs().add(1, "year");
 const shortCuts = [
   { key: "1day", text: "In a day", date: in1Day },
   { key: "1week", text: "In a week", date: in1Week },
+  { key: "2week", text: "In 2 weeks", date: in2Weeks },
   { key: "1month", text: "In a month", date: in1Month },
   { key: "3months", text: "In 3 months", date: in3Months },
   { key: "6months", text: "In 6 months", date: in6Months },
@@ -46,11 +48,11 @@ const datePickerConfigs: Configs = {
 };
 
 const formatDate = (value: string) => {
-  return dayjs(value).format("YYYY-MM-DD");
+  return value ? dayjs(value).format("YYYY-MM-DD") : null;
 };
 
 const formatTime = (value: string) => {
-  return dayjs(value).format("HH:mm:ss");
+  return value ? dayjs(value).format("HH:mm:ss") : "";
 };
 
 export const DateTimePicker = ({
@@ -59,16 +61,6 @@ export const DateTimePicker = ({
   value,
   onChange,
 }: DateTimePickerProps) => {
-  // const handleValueChange = (
-  //   newValue: Partial<{ date: string; time: string }>,
-  // ) => {
-  //   console.log("newValue:", newValue);
-  //   const d = new Date(value);
-  //   if(newValue.date) {
-  //     d.setDate(newValue.date)
-  //   }
-  // };
-
   const handleDateChange = useCallback(
     (newDateRange: DateValueType) => {
       const newDate = newDateRange?.startDate;
@@ -81,14 +73,14 @@ export const DateTimePicker = ({
       const parsedDate =
         typeof newDate === "string" ? new Date(newDate) : newDate;
 
-      const current = new Date(value);
+      const updated = dayjs(value || undefined)
+        .year(parsedDate.getFullYear())
+        .month(parsedDate.getMonth())
+        .date(parsedDate.getDate())
+        .second(0)
+        .millisecond(0);
 
-      parsedDate.setHours(value ? current.getHours() : 0);
-      parsedDate.setMinutes(value ? current.getMinutes() : 0);
-      parsedDate.setSeconds(value ? current.getSeconds() : 0);
-      parsedDate.setMilliseconds(0);
-
-      const isoDate = parsedDate.toISOString();
+      const isoDate = updated.toISOString();
 
       onChange(isoDate);
     },
@@ -109,21 +101,11 @@ export const DateTimePicker = ({
         }
       });
 
-      const current = dayjs(value || undefined);
-
-      console.log({
-        newTime,
-        parsedTimes,
-        value,
-        current,
-      });
       const updated = dayjs(value || undefined)
         .hour(parsedTimes?.[0] || 0)
         .minute(parsedTimes?.[1] || 0)
-        .second(parsedTimes?.[2] || 0)
+        .second(0)
         .millisecond(0);
-
-      console.log({ current, updated });
 
       const isoDate = updated.toISOString();
 
@@ -133,7 +115,10 @@ export const DateTimePicker = ({
   );
 
   return (
-    <div className="grid grid-cols-7 items-center justify-center gap-1">
+    <div
+      className="grid grid-cols-7 items-center justify-center gap-1"
+      data-testid="datetime-picker"
+    >
       <div className="relative col-span-4 w-full">
         <label
           className="absolute left-2 top-0 z-10 -translate-y-1/2 transform text-sm font-medium uppercase text-manatee-500 md:left-3"
@@ -153,8 +138,8 @@ export const DateTimePicker = ({
             )
           }
           value={{
-            startDate: value ? formatDate(value) : null,
-            endDate: value ? formatDate(value) : null,
+            startDate: formatDate(value),
+            endDate: formatDate(value),
           }}
           onChange={handleDateChange}
           useRange={false}
@@ -189,7 +174,7 @@ export const DateTimePicker = ({
             onChange={(e) => handleTimeChange(e.target.value)}
             id={`${name}-time-picker`}
             className="form-input w-full rounded-lg border border-gray-200 p-3 text-base text-gray-800 focus:ring-brand-primary"
-            value={value ? formatTime(value) : ""}
+            value={formatTime(value)}
           />
         </div>
       </div>
