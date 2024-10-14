@@ -52,7 +52,7 @@
     "autoprefixer": "10.4.19",
     "concurrently": "8.2.2",
     "eslint": "9.7.0",
-    "eslint-plugin-react-hooks": "4.6.2",
+    "eslint-plugin-react-hooks": "5.0.0",
     "eslint-plugin-react-refresh": "0.4.8",
     "globals": "15.8.0",
     "husky": "9.1.0",
